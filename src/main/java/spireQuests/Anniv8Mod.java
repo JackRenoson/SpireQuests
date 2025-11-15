@@ -4,6 +4,7 @@ import basemod.AutoAdd;
 import basemod.BaseMod;
 import basemod.ModLabeledToggleButton;
 import basemod.ModPanel;
+import basemod.devcommands.ConsoleCommand;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
@@ -26,6 +27,8 @@ import org.apache.logging.log4j.Logger;
 import spireQuests.abstracts.AbstractSQRelic;
 import spireQuests.cardvars.SecondDamage;
 import spireQuests.cardvars.SecondMagicNumber;
+import spireQuests.commands.AddQuestCommand;
+import spireQuests.commands.SpawnQuestCommand;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.quests.QuestGenerator;
 import spireQuests.quests.QuestManager;
@@ -183,6 +186,9 @@ public class Anniv8Mod implements
         initializeConfig();
 
         BaseMod.addCustomScreen(new QuestBoardScreen());
+
+        ConsoleCommand.addCommand("addquest", AddQuestCommand.class);
+        ConsoleCommand.addCommand("spawnquest", SpawnQuestCommand.class);
     }
 
     public static void addPotions() {

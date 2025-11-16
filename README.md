@@ -16,6 +16,8 @@ To make a quest, make a class that extends `AbstractQuest` (take a look over it 
 
 Your quest also needs to set its reward by calling `addReward`. There are several reward types defined in `QuestReward` that should cover most quests (look through that class for what's available).
 
+Relics/cards/monsters/powers you make should extend the appropriate class in the `abstracts` folder.
+
 Images unique to your quests should be saved in `anniv8Resources/images/[username]/`.  
 Localization is saved in `anniv8Resources/localization/[langKey]/[username]/`.  
   

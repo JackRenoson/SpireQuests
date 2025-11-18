@@ -13,8 +13,11 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.rewards.chests.AbstractChest;
 import com.megacrit.cardcrawl.rewards.chests.BossChest;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
+import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
+import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import javassist.CtBehavior;
 import spireQuests.quests.Trigger;
 
@@ -22,12 +25,17 @@ public class QuestTriggers {
     public static final Trigger<Void> DECK_CHANGE = new Trigger<>();
     public static final Trigger<AbstractCard> REMOVE_CARD = new Trigger<>();
     public static final Trigger<AbstractCard> ADD_CARD = new Trigger<>();
+
     public static final Trigger<MapRoomNode> ENTER_ROOM = new Trigger<>();
     public static final Trigger<MapRoomNode> LEAVE_ROOM = new Trigger<>();
+
     public static final Trigger<AbstractCard> PLAY_CARD = new Trigger<>();
     public static final Trigger<Integer> DAMAGE_TAKEN = new Trigger<>();
     public static final Trigger<Void> TURN_START = new Trigger<>();
+    public static final Trigger<Void> TURN_END = new Trigger<>();
     public static final Trigger<Void> VICTORY = new Trigger<>();
+    public static final Trigger<AbstractPotion> USE_POTION = new Trigger<>();
+
     public static final Trigger<Void> IMPENDING_DAY_KILL = new Trigger<>();
     public static final Trigger<Integer> ACT_CHANGE = new Trigger<>();
     public static final Trigger<AbstractChest> CHEST_OPENED = new Trigger<>();
@@ -148,6 +156,16 @@ public class QuestTriggers {
         }
     }
 
+    @SpirePatch2(clz = AbstractRoom.class, method = "endTurn")
+    public static class OnTurnEnd {
+        @SpirePostfixPatch()
+        public static void turnEndPatch() {
+            if (disabled()) return;
+
+            TURN_END.trigger();
+        }
+    }
+
     @SpirePatch2(clz = AbstractPlayer.class, method = "onVictory")
     public static class OnVictory {
         @SpirePrefixPatch
@@ -193,6 +211,28 @@ public class QuestTriggers {
         public static void OpenChestPostfix(AbstractChest __instance, boolean bossChest){
             if (disabled()) return;
             CHEST_OPENED.trigger(__instance);
+    @SpirePatch2(clz= PotionPopUp.class, method = "updateInput")
+    @SpirePatch2(clz= PotionPopUp.class, method = "updateTargetMode")
+    public static class PotionUse {
+        @SpireInsertPatch(locator = DestroyPotionLocator.class, localvars={"potion"})
+        public static void generalPotionPatch(AbstractPotion potion) {
+            USE_POTION.trigger(potion);
+        }
+    }
+
+    @SpirePatch(clz=AbstractPlayer.class, method="damage")
+    public static class FairyPotionUse {
+        @SpireInsertPatch(locator=DestroyPotionLocator.class, localvars={"p"})
+        public static void fairyPotPatch(AbstractPotion p) {
+            USE_POTION.trigger(p);
+        }
+    }
+
+    private static class DestroyPotionLocator extends SpireInsertLocator {
+        @Override
+        public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+            Matcher finalMatcher = new Matcher.MethodCallMatcher(TopPanel.class, "destroyPotion");
+            return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
         }
     }
 }

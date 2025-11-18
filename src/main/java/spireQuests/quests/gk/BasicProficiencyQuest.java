@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.quests.QuestReward;
+import spireQuests.quests.gk.cards.Cardmancy;
 import spireQuests.quests.gk.cards.Smash;
 import spireQuests.quests.gk.cards.Thriver;
 import spireQuests.quests.gk.cards.TripleCast;
@@ -30,7 +31,7 @@ public class BasicProficiencyQuest extends AbstractQuest {
         CHAR_MAP.put("THE_SILENT", Arrays.asList(Survivor.ID, Thriver.ID));
         CHAR_MAP.put("DEFECT", Arrays.asList(Dualcast.ID, TripleCast.ID));
         CHAR_MAP.put("WATCHER", Arrays.asList(Vigilance.ID, ""));
-        CHAR_MAP.put("THE_PACKMASTER", Arrays.asList("anniv5:Cardistry", ""));
+        CHAR_MAP.put("THE_PACKMASTER", Arrays.asList("anniv5:Cardistry", Cardmancy.ID));
     }
     private String cardToPlayId = Madness.ID;
     private String rewardCardId = Madness.ID;

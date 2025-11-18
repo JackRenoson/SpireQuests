@@ -16,9 +16,11 @@ import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
@@ -73,20 +75,13 @@ public class Anniv8Mod implements
 
     public static final String modID = "anniv8";
 
-    private static final String ATTACK_S_ART = modID + "Resources/images/512/attack.png";
-    private static final String SKILL_S_ART = modID + "Resources/images/512/skill.png";
-    private static final String POWER_S_ART = modID + "Resources/images/512/power.png";
-    private static final String CARD_ENERGY_S = modID + "Resources/images/512/energy.png";
-    private static final String TEXT_ENERGY = modID + "Resources/images/512/text_energy.png";
-    private static final String ATTACK_L_ART = modID + "Resources/images/1024/attack.png";
-    private static final String SKILL_L_ART = modID + "Resources/images/1024/skill.png";
-    private static final String POWER_L_ART = modID + "Resources/images/1024/power.png";
-
     public static boolean initializedStrings = false;
 
     public static final Map<String, Keyword> keywords = new HashMap<>();
 
     public static HashSet<String> questPackages = new HashSet<>();
+
+    public static AbstractCard.CardColor PM_COLOR = AbstractCard.CardColor.COLORLESS;
 
     public static String makeID(String idText) {
         return modID + ":" + idText;
@@ -172,6 +167,11 @@ public class Anniv8Mod implements
 
         ConsoleCommand.addCommand("addquest", AddQuestCommand.class);
         ConsoleCommand.addCommand("spawnquest", SpawnQuestCommand.class);
+
+        AbstractCard pmCard = CardLibrary.getCard("anniv5:Cardistry");
+        if(pmCard != null) {
+            PM_COLOR = pmCard.color;
+        }
     }
 
     public static void addPotions() {

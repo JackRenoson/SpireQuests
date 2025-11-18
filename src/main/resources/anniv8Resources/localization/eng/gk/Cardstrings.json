@@ -10,5 +10,9 @@
   "${ModID}:Thriver": {
     "NAME": "Thriver",
     "DESCRIPTION": "{@@}Gain !B! Block. NL Draw !M! card{!M!|0,>1=s}. NL Discard !M! card{!M!|0,>1=s}."
+  },
+  "${ModID}:Cardmancy": {
+    "NAME": "Cardmancy",
+    "DESCRIPTION": "Gain !B! Block. NL The next card you play this turn is returned to the top of your draw pile and upgraded."
   }
 }

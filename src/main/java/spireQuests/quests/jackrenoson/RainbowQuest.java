@@ -14,12 +14,13 @@ import java.util.ArrayList;
 
 public class RainbowQuest extends AbstractQuest {
     ArrayList<AbstractCard.CardColor> colorsAdded = new ArrayList<>();
-    int req = 3;
+    int req;
 
     public RainbowQuest() {
         super(QuestType.SHORT, QuestDifficulty.EASY);
         rewardScreenOnly = true;
         needHoverTip = true;
+        req = determineReq();
 
         Tracker tracker = new TriggerTracker<>(QuestTriggers.ADD_CARD, req)
                 .triggerCondition((card) -> !colorsAdded.contains(card.color))
@@ -50,7 +51,7 @@ public class RainbowQuest extends AbstractQuest {
     @Override
     protected void setText() {
         name = localization.TEXT[0];
-        description = localization.TEXT[1] + req + localization.TEXT[2];
+        description = localization.TEXT[1] + determineReq() + localization.TEXT[2];
         author = localization.TEXT[3];
     }
 
@@ -61,5 +62,16 @@ public class RainbowQuest extends AbstractQuest {
             colorNames.add(c.name().toLowerCase());
         }
         return new PowerTip(localization.EXTRA_TEXT[2], String.join(" NL ", colorNames));
+    }
+
+    private int determineReq(){
+        int totalColors = AbstractCard.CardColor.values().length-1; //-1 to not count Curses
+        double i = 2;
+        int r = 0;
+        while (totalColors > i){ //Dynamically determine the required number of unique cards based on amount of colors, increasing threshold by 50% each time.
+            i *= 1.5;
+            r++;
+        } //5-6 is 3, 7-10 is 4, 11-15 is 5, 16-22 is 6 etc. Function r(c) = log{1.5}(0.5c), rounding up
+        return r;
     }
 }

@@ -8,9 +8,13 @@ import com.megacrit.cardcrawl.relics.PrismaticShard;
 import com.megacrit.cardcrawl.relics.QuestionCard;
 import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
+import spireQuests.quests.QuestManager;
 import spireQuests.quests.QuestReward;
+import spireQuests.quests.modargo.MulticlassQuest;
+import spireQuests.quests.modargo.relics.MulticlassEmblem;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RainbowQuest extends AbstractQuest {
     ArrayList<AbstractCard.CardColor> colorsAdded = new ArrayList<>();
@@ -35,6 +39,15 @@ public class RainbowQuest extends AbstractQuest {
 
         addReward(new QuestReward.RelicReward(new QuestionCard()));
         addReward(new QuestReward.RelicReward(new PrismaticShard()));
+    }
+
+    @Override
+    public boolean canSpawn(){
+        for(AbstractQuest q : QuestManager.getAllQuests()){
+            if (Objects.equals(q.id, new MulticlassQuest().id))
+                return false;
+        }
+        return !AbstractDungeon.player.hasRelic(PrismaticShard.ID) && !AbstractDungeon.player.hasRelic(MulticlassEmblem.ID);
     }
 
     @Override

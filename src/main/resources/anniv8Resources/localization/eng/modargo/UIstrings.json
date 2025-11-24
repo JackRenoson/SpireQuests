@@ -88,5 +88,15 @@
     "EXTRA_TEXT": [
       "Ritual steps"
     ]
+  },
+  "${ModID}:BountyDefectQuest": {
+    "TEXT": [
+      "Bounty: Blue Devil",
+      "A devil of metal stalks these halls. The next elite this act is replaced by the #bDefect.",
+      "modargo"
+    ],
+    "EXTRA_TEXT": [
+      "Devil slain"
+    ]
   }
 }

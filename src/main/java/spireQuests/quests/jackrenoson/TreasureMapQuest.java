@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
+import static org.apache.commons.lang3.math.NumberUtils.min;
+
 public class TreasureMapQuest extends AbstractQuest {
-    private static final Texture X = TexLoader.getTexture(Anniv8Mod.makeContributionPath("jackrenoson", "X.png"));
+    public static final Texture X = TexLoader.getTexture(Anniv8Mod.makeContributionPath("jackrenoson", "X.png"));
     private MapRoomNode targetRoom;
 
     public TreasureMapQuest() {
@@ -44,51 +46,35 @@ public class TreasureMapQuest extends AbstractQuest {
     public void onStart() {
         super.onStart();
         AbstractDungeon.rareRelicPool.remove(Shovel.ID);
-        targetRoom = getAccessableNode(r -> r.getRoom() instanceof RestRoom &&
-                ShowMarkedNodesOnMapPatch.ImageField.image.get(r) == null);
+        targetRoom = getAccessableRestSite();
         ShowMarkedNodesOnMapPatch.ImageField.image.set(targetRoom, X);
     }
 
-    /**
-     * Checks all rooms in the next row, saves all rooms that have a reachable room as a parent as a reachable room, and gives a random reachable room that fits the condition.
-     * @param condition that the to return room has to hold for
-     * @return reachable room for which the condition holds
-     */
-    private MapRoomNode getAccessableNode(Function<MapRoomNode, Boolean> condition) {
+    private MapRoomNode getAccessableRestSite() {
         Collection<MapRoomNode> reachableRooms = new ArrayList<MapRoomNode>();
         ArrayList<MapRoomNode> validRooms = new ArrayList<MapRoomNode>();
+        ArrayList<MapRoomNode> topRests = new ArrayList<MapRoomNode>();
         int playerFloor = AbstractDungeon.floorNum%17;
         if(playerFloor == 0) {
             reachableRooms.addAll(AbstractDungeon.map.get(playerFloor));
             playerFloor++;
         } else reachableRooms.add(AbstractDungeon.getCurrMapNode());
-        for(int i = playerFloor; i<15;i++) {
+        for(int i = playerFloor;  i<15;i++) {
             for (MapRoomNode child : AbstractDungeon.map.get(i)) {
                 if (!Collections.disjoint(reachableRooms, child.getParents())) {
                     reachableRooms.add(child);
-                    if(condition.apply(child)){
-                        validRooms.add(child);
+                    if(child.getRoom() instanceof RestRoom && ShowMarkedNodesOnMapPatch.ImageField.image.get(child) == null){
+                        if(i<14) {
+                            validRooms.add(child);
+                        } else { // Makes a top Rest Site much less likely to be the marked Rest Site
+                            topRests.add(child);
+                        }
                     }
                 }
             }
+            validRooms.add(topRests.get(AbstractDungeon.mapRng.random(0, topRests.size()-1)));
         }
         return validRooms.get(AbstractDungeon.mapRng.random(0, validRooms.size()-1));
-    }
-
-    private void checkParents(ArrayList<MapRoomNode> list, ArrayList<MapRoomNode> checkedList, MapRoomNode node, Function<MapRoomNode, Boolean> condition){
-        System.out.println("checkParents");
-        for(MapRoomNode parent : node.getParents()){
-            System.out.println("There are parents");
-            if(!checkedList.contains(parent)) {
-                System.out.println("Not checked");
-                if(condition.apply(parent) && !list.contains(parent)){
-                    System.out.println("Conditions apply");
-                    list.add(parent);
-                }
-                checkedList.add(parent);
-                checkParents(list, checkedList, parent, condition);
-            }
-        }
     }
 
     @Override

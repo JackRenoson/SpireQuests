@@ -2,9 +2,12 @@ package spireQuests.quests.jackrenoson.patches;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.CampfireUI;
 import com.megacrit.cardcrawl.ui.campfire.AbstractCampfireOption;
 import com.megacrit.cardcrawl.ui.campfire.DigOption;
+import spireQuests.quests.jackrenoson.TreasureMapQuest;
+import spireQuests.quests.modargo.patches.ShowMarkedNodesOnMapPatch;
 
 import java.util.ArrayList;
 
@@ -14,7 +17,8 @@ public class TreasureMapXPatch {
     public static class PostButtonAddingCatcher {
         @SpireInsertPatch(rloc = 25) // 117: boolean cannotProceed = true;
         public static void postAddingButtons(CampfireUI __instance, ArrayList<AbstractCampfireOption> ___buttons) {
-            ___buttons.add(new DigOption());
+            if(ShowMarkedNodesOnMapPatch.ImageField.image.get(AbstractDungeon.getCurrMapNode()) == TreasureMapQuest.X)
+                ___buttons.add(new DigOption());
         }
     }
 

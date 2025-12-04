@@ -118,10 +118,12 @@ public class GatheringExpeditionQuest extends AbstractQuest {
     }
 
     public static void clearNodes() {
+        Texture t = getTexture();
         for (int i = 0; i < AbstractDungeon.map.size(); i++) {
             for (int j = 0; j < AbstractDungeon.map.get(i).size(); j++) {
                 MapRoomNode node = AbstractDungeon.map.get(i).get(j);
-                ShowMarkedNodesOnMapPatch.ImageField.image.set(node, null);
+                if(ShowMarkedNodesOnMapPatch.ImageField.image.get(node) == t)
+                    ShowMarkedNodesOnMapPatch.ImageField.image.set(node, null);
             }
         }
     }

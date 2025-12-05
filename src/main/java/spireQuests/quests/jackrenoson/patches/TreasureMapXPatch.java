@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.rooms.CampfireUI;
 import com.megacrit.cardcrawl.ui.campfire.AbstractCampfireOption;
 import com.megacrit.cardcrawl.ui.campfire.DigOption;
 import spireQuests.quests.jackrenoson.TreasureMapQuest;
-import spireQuests.quests.modargo.patches.ShowMarkedNodesOnMapPatch;
+import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 
 import java.util.ArrayList;
 

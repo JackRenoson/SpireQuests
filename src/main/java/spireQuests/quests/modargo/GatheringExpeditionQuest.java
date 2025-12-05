@@ -20,7 +20,7 @@ import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.quests.QuestManager;
 import spireQuests.quests.QuestReward;
-import spireQuests.quests.modargo.patches.ShowMarkedNodesOnMapPatch;
+import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.quests.modargo.relics.FloralGarland;
 import spireQuests.quests.modargo.relics.JewelledBauble;
 import spireQuests.quests.modargo.relics.SpireAlloyHelmet;
@@ -138,7 +138,7 @@ public class GatheringExpeditionQuest extends AbstractQuest {
                 MapRoomNode node = AbstractDungeon.map.get(i).get(j);
                 if (node.hasEdges() && !(AbstractDungeon.actNum == 1 && node.y == 0)) {
                     boolean invalid = node.getRoom() instanceof ShopRoom || node.getRoom() instanceof TreasureRoom;
-                    if (!invalid) {
+                    if (!invalid && ShowMarkedNodesOnMapPatch.ImageField.image.get(node) == null) {
                         possibleNodes.add(node);
                     }
                 }
@@ -163,7 +163,7 @@ public class GatheringExpeditionQuest extends AbstractQuest {
     }
 
     public static boolean isNodeMarked(MapRoomNode node) {
-        return ShowMarkedNodesOnMapPatch.ImageField.image.get(node) != null;
+        return ShowMarkedNodesOnMapPatch.ImageField.image.get(node) == getTexture();
     }
 
     @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class})

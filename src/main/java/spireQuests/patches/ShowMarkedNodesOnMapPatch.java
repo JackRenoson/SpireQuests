@@ -1,4 +1,4 @@
-package spireQuests.quests.modargo.patches;
+package spireQuests.patches;
 
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;

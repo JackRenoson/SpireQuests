@@ -1,40 +1,30 @@
 package spireQuests.quests.jackrenoson;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.map.MapRoomNode;
-import com.megacrit.cardcrawl.relics.PrismaticShard;
-import com.megacrit.cardcrawl.relics.QuestionCard;
 import com.megacrit.cardcrawl.relics.Shovel;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.RestRoom;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
-import spireQuests.quests.QuestManager;
-import spireQuests.quests.QuestReward;
-import spireQuests.quests.modargo.MulticlassQuest;
-import spireQuests.quests.modargo.patches.ShowMarkedNodesOnMapPatch;
-import spireQuests.quests.modargo.relics.MulticlassEmblem;
+import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.util.TexLoader;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Function;
 
 import static org.apache.commons.lang3.math.NumberUtils.min;
 
 public class TreasureMapQuest extends AbstractQuest {
     public static final Texture X = TexLoader.getTexture(Anniv8Mod.makeContributionPath("jackrenoson", "X.png"));
-    private MapRoomNode targetRoom;
 
     public TreasureMapQuest() {
         super(QuestType.SHORT, QuestDifficulty.NORMAL);
-        needHoverTip = true;
+        new TriggerTracker<>(QuestTriggers.ENTER_ROOM, 1)
+                .triggerCondition(r -> ShowMarkedNodesOnMapPatch.ImageField.image.get(r) == X)
+                .add(this);
     }
 
     @Override
@@ -46,7 +36,7 @@ public class TreasureMapQuest extends AbstractQuest {
     public void onStart() {
         super.onStart();
         AbstractDungeon.rareRelicPool.remove(Shovel.ID);
-        targetRoom = getAccessableRestSite();
+        MapRoomNode targetRoom = getAccessableRestSite();
         ShowMarkedNodesOnMapPatch.ImageField.image.set(targetRoom, X);
     }
 
@@ -72,13 +62,20 @@ public class TreasureMapQuest extends AbstractQuest {
                     }
                 }
             }
-            validRooms.add(topRests.get(AbstractDungeon.mapRng.random(0, topRests.size()-1)));
+            if (topRests.size()>0) {
+                validRooms.add(topRests.get(AbstractDungeon.mapRng.random(0, topRests.size() - 1)));
+            }
         }
         return validRooms.get(AbstractDungeon.mapRng.random(0, validRooms.size()-1));
     }
 
     @Override
     public void onComplete() {
+        AbstractDungeon.rareRelicPool.add(Shovel.ID);
+    }
+
+    @Override
+    public void onFail() {
         AbstractDungeon.rareRelicPool.add(Shovel.ID);
     }
 }

@@ -88,7 +88,7 @@ public class TreasureMapQuest extends AbstractQuest {
     }
 
     public static void markRestSiteIfQuestActive() {
-        if (CardCrawlGame.isInARun() && QuestManager.quests().stream().anyMatch(q -> q instanceof TreasureMapQuest)) {
+        if (CardCrawlGame.isInARun() && QuestManager.quests().stream().anyMatch(q -> q instanceof TreasureMapQuest && !q.isCompleted())) {
             MapRoomNode targetRoom = getAccessableRestSite();
             ShowMarkedNodesOnMapPatch.ImageField.image.set(targetRoom, X);
         }

@@ -1,14 +1,22 @@
 package spireQuests.quests.jackrenoson;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.evacipated.cardcrawl.modthespire.Loader;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.relics.Shovel;
 import com.megacrit.cardcrawl.rooms.RestRoom;
+import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
+import spireQuests.quests.QuestManager;
+import spireQuests.quests.modargo.GatheringExpeditionQuest;
 import spireQuests.util.TexLoader;
 
 import java.util.ArrayList;
@@ -40,7 +48,7 @@ public class TreasureMapQuest extends AbstractQuest {
         ShowMarkedNodesOnMapPatch.ImageField.image.set(targetRoom, X);
     }
 
-    private MapRoomNode getAccessableRestSite() {
+    private static MapRoomNode getAccessableRestSite() {
         Collection<MapRoomNode> reachableRooms = new ArrayList<MapRoomNode>();
         ArrayList<MapRoomNode> validRooms = new ArrayList<MapRoomNode>();
         ArrayList<MapRoomNode> topRests = new ArrayList<MapRoomNode>();
@@ -62,7 +70,7 @@ public class TreasureMapQuest extends AbstractQuest {
                     }
                 }
             }
-            if (topRests.size()>0) {
+            if (!topRests.isEmpty()) {
                 validRooms.add(topRests.get(AbstractDungeon.mapRng.random(0, topRests.size() - 1)));
             }
         }
@@ -77,5 +85,32 @@ public class TreasureMapQuest extends AbstractQuest {
     @Override
     public void onFail() {
         AbstractDungeon.rareRelicPool.add(Shovel.ID);
+    }
+
+    public static void markRestSiteIfQuestActive() {
+        if (CardCrawlGame.isInARun() && QuestManager.quests().stream().anyMatch(q -> q instanceof TreasureMapQuest)) {
+            MapRoomNode targetRoom = getAccessableRestSite();
+            ShowMarkedNodesOnMapPatch.ImageField.image.set(targetRoom, X);
+        }
+    }
+
+    @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class})
+    @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class, SaveFile.class})
+    public static class MarkNodesOnGetDungeonPatch {
+        @SpirePostfixPatch
+        public static void markNodesOnGetDungeon(CardCrawlGame __instance) {
+            if (!Loader.isModLoaded("actlikeit")) {
+                markRestSiteIfQuestActive();
+            }
+        }
+    }
+
+    @SpirePatch2(cls = "actlikeit.patches.GetDungeonPatches$getDungeonThroughProgression", method = "Postfix", paramtypez = { AbstractDungeon.class, CardCrawlGame.class, String.class, AbstractPlayer.class }, requiredModId = "actlikeit")
+    @SpirePatch2(cls = "actlikeit.patches.GetDungeonPatches$getDungeonThroughSavefile", method = "Postfix", paramtypez = { AbstractDungeon.class, CardCrawlGame.class, String.class, AbstractPlayer.class, SaveFile.class }, requiredModId = "actlikeit")
+    public static class MarkNodesOnGetDungeonActLikeIt {
+        @SpirePostfixPatch
+        public static void markNodesOnGetDungeonActLikeIt() {
+            markRestSiteIfQuestActive();
+        }
     }
 }

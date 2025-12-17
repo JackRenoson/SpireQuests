@@ -61,7 +61,7 @@ public class TreasureMapQuest extends AbstractQuest {
             for (MapRoomNode child : AbstractDungeon.map.get(i)) {
                 if (!Collections.disjoint(reachableRooms, child.getParents())) {
                     reachableRooms.add(child);
-                    if(child.getRoom() instanceof RestRoom && ShowMarkedNodesOnMapPatch.ImageField.image.get(child) == null){
+                    if(child.getRoom() instanceof RestRoom){
                         if(i<14) {
                             validRooms.add(child);
                         } else { // Makes a top Rest Site much less likely to be the marked Rest Site
@@ -90,7 +90,7 @@ public class TreasureMapQuest extends AbstractQuest {
     public static void markRestSiteIfQuestActive() {
         if (CardCrawlGame.isInARun() && QuestManager.quests().stream().anyMatch(q -> q instanceof TreasureMapQuest && !q.isCompleted())) {
             MapRoomNode targetRoom = getAccessableRestSite();
-            ShowMarkedNodesOnMapPatch.ImageField.image.set(targetRoom, X);
+            ShowMarkedNodesOnMapPatch.ImageField.MarkNode(targetRoom, id, X);
         }
     }
 

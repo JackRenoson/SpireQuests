@@ -31,7 +31,7 @@ public class TreasureMapQuest extends AbstractQuest {
     public TreasureMapQuest() {
         super(QuestType.SHORT, QuestDifficulty.NORMAL);
         new TriggerTracker<>(QuestTriggers.ENTER_ROOM, 1)
-                .triggerCondition(r -> ShowMarkedNodesOnMapPatch.ImageField.image.get(r) == X)
+                .triggerCondition(r -> ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(r, id))
                 .add(this);
     }
 
@@ -45,7 +45,7 @@ public class TreasureMapQuest extends AbstractQuest {
         super.onStart();
         AbstractDungeon.rareRelicPool.remove(Shovel.ID);
         MapRoomNode targetRoom = getAccessableRestSite();
-        ShowMarkedNodesOnMapPatch.ImageField.image.set(targetRoom, X);
+        ShowMarkedNodesOnMapPatch.ImageField.MarkNode(targetRoom, id, X);
     }
 
     private static MapRoomNode getAccessableRestSite() {

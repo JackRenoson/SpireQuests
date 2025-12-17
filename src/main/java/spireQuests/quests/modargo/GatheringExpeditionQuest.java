@@ -40,7 +40,7 @@ public class GatheringExpeditionQuest extends AbstractQuest {
         super(QuestType.LONG, QuestDifficulty.NORMAL);
 
         Tracker tracker = new TriggerTracker<>(QuestTriggers.ENTER_ROOM, 9)
-                .triggerCondition(GatheringExpeditionQuest::isNodeMarked)
+                .triggerCondition(r -> ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(r, id))
                 .add(this);
         tracker.text = this.getTrackerText();
 
@@ -109,27 +109,15 @@ public class GatheringExpeditionQuest extends AbstractQuest {
 
     @Override
     public void onComplete() {
-        clearNodes();
+        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
     }
 
     @Override
     public void onFail() {
-        clearNodes();
-    }
-
-    public static void clearNodes() {
-        Texture t = getTexture();
-        for (int i = 0; i < AbstractDungeon.map.size(); i++) {
-            for (int j = 0; j < AbstractDungeon.map.get(i).size(); j++) {
-                MapRoomNode node = AbstractDungeon.map.get(i).get(j);
-                if(ShowMarkedNodesOnMapPatch.ImageField.image.get(node) == t)
-                    ShowMarkedNodesOnMapPatch.ImageField.image.set(node, null);
-            }
-        }
+        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
     }
 
     public static void markNodes() {
-        Texture image = getTexture();
         Random rng = new Random(Settings.seed + AbstractDungeon.actNum * 5689L);
 
         List<MapRoomNode> possibleNodes = new ArrayList<>();
@@ -137,8 +125,7 @@ public class GatheringExpeditionQuest extends AbstractQuest {
             for (int j = 0; j < AbstractDungeon.map.get(i).size(); j++) {
                 MapRoomNode node = AbstractDungeon.map.get(i).get(j);
                 if (node.hasEdges() && !(AbstractDungeon.actNum == 1 && node.y == 0)) {
-                    boolean invalid = node.getRoom() instanceof ShopRoom || node.getRoom() instanceof TreasureRoom;
-                    if (!invalid && ShowMarkedNodesOnMapPatch.ImageField.image.get(node) == null) {
+                    if (!(node.getRoom() instanceof ShopRoom) && !(node.getRoom() instanceof TreasureRoom)) {
                         possibleNodes.add(node);
                     }
                 }
@@ -152,7 +139,7 @@ public class GatheringExpeditionQuest extends AbstractQuest {
         n = Math.min(n, possibleNodes.size());
         for (int i = 0; i < n; i++) {
             MapRoomNode node = possibleNodes.get(i);
-            ShowMarkedNodesOnMapPatch.ImageField.image.set(node, image);
+            ShowMarkedNodesOnMapPatch.ImageField.MarkNode(node, id, getTexture());
         }
     }
 
@@ -160,10 +147,6 @@ public class GatheringExpeditionQuest extends AbstractQuest {
         if (CardCrawlGame.isInARun() && QuestManager.quests().stream().anyMatch(q -> q instanceof GatheringExpeditionQuest)) {
             markNodes();
         }
-    }
-
-    public static boolean isNodeMarked(MapRoomNode node) {
-        return ShowMarkedNodesOnMapPatch.ImageField.image.get(node) == getTexture();
     }
 
     @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class})

@@ -17,7 +17,7 @@ public class TreasureMapXPatch {
     public static class PostButtonAddingCatcher {
         @SpireInsertPatch(rloc = 25) // 117: boolean cannotProceed = true;
         public static void postAddingButtons(CampfireUI __instance, ArrayList<AbstractCampfireOption> ___buttons) {
-            if(ShowMarkedNodesOnMapPatch.ImageField.image.get(AbstractDungeon.getCurrMapNode()) == TreasureMapQuest.X)
+            if(ShowMarkedNodesOnMapPatch.ImageField.images.get(AbstractDungeon.getCurrMapNode()).contains(TreasureMapQuest.X))
                 ___buttons.add(new DigOption());
         }
     }

@@ -1,12 +1,11 @@
 {
   "${ModID}:SelloutQuest": {
     "TITLE": "Sellout",
-    "DESCRIPTION": "Upon pickup, add #b3 #yAdvertisements to your deck. Remove #b1 #yAdvertisement from your deck every #b5 combats won. Remove ALL #yAdvertisements from your deck to complete the quest.\n\n",
+    "DESCRIPTION": "Upon pickup, add #b1 #yAdvertisement to your deck. Remove the #yAdvertisement from your deck to complete the quest.\n\n",
     "AUTHOR": "RamChops Games",
     "REWARD": "Gain #b10 Gold for every #yAdvertisement played.",
     "TRACKER_TEXT": [
       "Ad Revenue Owed",
-      "Combats Won",
       "Remove Ads"
     ]
   },
@@ -33,6 +32,28 @@
     "AUTHOR": "RamChops Games",
     "TRACKER_TEXT": [
       "Leave Shops Without Spending Gold"
+    ],
+    "EXTRA_TEXT": [
+      " NL NL #rWARNING: #rQuest #rwill #rfail #ron #rpickup #rif #rtaken #rafter #rspending #rmoney #rat #rthis #rshop!"
+    ]
+  },
+  "${ModID}:ThatsSmoresQuest": {
+    "TITLE": "That's S'Mores",
+    "DESCRIPTION": "You can now roast marshmallows at Rest Sites. Do this #b2 times.",
+    "AUTHOR": "RamChops Games",
+    "TRACKER_TEXT": [
+      "Roast Marshmallows"
+    ]
+  },
+  "${ModID}:CharityQuest": {
+    "TITLE": "Charity Case",
+    "DESCRIPTION": "Any Gold reward you skip will be donated to The Cleric. This Quest ends when you gain any Gold, or if you obtain #yEctoplasm [REMOVE_SPACE].",
+    "AUTHOR": "RamChops Games",
+    "REWARD": "The Cleric thanks you! He will grant #b1 Max HP for every #b15 Gold donated.",
+    "TRACKER_TEXT": [
+      "Gold Donated",
+      "Cleric's Gratitude",
+      "Gain Some Gold"
     ]
   }
 }

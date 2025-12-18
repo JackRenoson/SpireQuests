@@ -35,7 +35,7 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         CHALLENGE
     }
 
-    public static final String id;
+    public final String id;
     public final QuestType type;
     public final QuestDifficulty difficulty;
 

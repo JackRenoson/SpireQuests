@@ -131,22 +131,6 @@ public class GatheringExpeditionQuest extends AbstractQuest implements MarkNodeQ
         return new Random();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        markNodes(AbstractDungeon.map, rng());
-    }
-
-    @Override
-    public void onComplete() {
-        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id, getTexture());
-    }
-
-    @Override
-    public void onFail() {
-        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id, getTexture());
-    }
-
     private enum ExpeditionFlavor {
         Flowers,
         Minerals,

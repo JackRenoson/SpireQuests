@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import javassist.CtBehavior;
 import spireQuests.Anniv8Mod;
+import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.quests.gk.BountyICQuest;
 import spireQuests.util.QuestStrings;
 import spireQuests.util.QuestStringsUtils;
@@ -317,13 +318,22 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         for (QuestReward r : questRewards) {
             r.init();
         }
+        if(this instanceof MarkNodeQuest) {
+            MarkNodeQuest q = (MarkNodeQuest) this;
+            q.markNodes(AbstractDungeon.map, q.rng());
+        }
     }
 
     public void onComplete() {
-
+        if(this instanceof MarkNodeQuest) {
+            ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
+        }
     }
 
     public void onFail() {
+        if(this instanceof MarkNodeQuest) {
+            ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
+        }
     }
 
     public boolean canSpawn() {

@@ -51,19 +51,16 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
     public void onStart() {
         super.onStart();
         AbstractDungeon.rareRelicPool.remove(Shovel.ID);
-        markNodes(AbstractDungeon.map, rng());
     }
 
     @Override
     public void onComplete() {
         AbstractDungeon.rareRelicPool.add(Shovel.ID);
-        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
     }
 
     @Override
     public void onFail() {
         AbstractDungeon.rareRelicPool.add(Shovel.ID);
-        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
     }
 
     @Override

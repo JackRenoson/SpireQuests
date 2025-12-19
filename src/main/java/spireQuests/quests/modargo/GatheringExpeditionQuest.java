@@ -2,8 +2,7 @@ package spireQuests.quests.modargo;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -12,6 +11,7 @@ import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
+import com.megacrit.cardcrawl.relics.Shovel;
 import com.megacrit.cardcrawl.rooms.ShopRoom;
 import com.megacrit.cardcrawl.rooms.TreasureRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
@@ -102,22 +102,6 @@ public class GatheringExpeditionQuest extends AbstractQuest implements MarkNodeQ
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        markNodes();
-    }
-
-    @Override
-    public void onComplete() {
-        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
-    }
-
-    @Override
-    public void onFail() {
-        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id);
-    }
-
     public void markNodes(ArrayList<ArrayList<MapRoomNode>> map, Random rng) {
         List<MapRoomNode> possibleNodes = new ArrayList<>();
         for (int i = 0; i < map.size(); i++) {
@@ -142,25 +126,26 @@ public class GatheringExpeditionQuest extends AbstractQuest implements MarkNodeQ
         }
     }
 
-//    @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class})
-//    @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class, SaveFile.class})
-//    public static class MarkNodesOnGetDungeonPatch {
-//        @SpirePostfixPatch
-//        public static void markNodesOnGetDungeon(CardCrawlGame __instance) {
-//            if (!Loader.isModLoaded("actlikeit")) {
-//                markNodesIfQuestActive();
-//            }
-//        }
-//    }
-//
-//    @SpirePatch2(cls = "actlikeit.patches.GetDungeonPatches$getDungeonThroughProgression", method = "Postfix", paramtypez = { AbstractDungeon.class, CardCrawlGame.class, String.class, AbstractPlayer.class }, requiredModId = "actlikeit")
-//    @SpirePatch2(cls = "actlikeit.patches.GetDungeonPatches$getDungeonThroughSavefile", method = "Postfix", paramtypez = { AbstractDungeon.class, CardCrawlGame.class, String.class, AbstractPlayer.class, SaveFile.class }, requiredModId = "actlikeit")
-//    public static class MarkNodesOnGetDungeonActLikeIt {
-//        @SpirePostfixPatch
-//        public static void markNodesOnGetDungeonActLikeIt() {
-//            markNodesIfQuestActive();
-//        }
-//    }
+    @Override
+    public Random rng() {
+        return new Random();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        markNodes(AbstractDungeon.map, rng());
+    }
+
+    @Override
+    public void onComplete() {
+        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id, getTexture());
+    }
+
+    @Override
+    public void onFail() {
+        ShowMarkedNodesOnMapPatch.ImageField.ClearMarks(id, getTexture());
+    }
 
     private enum ExpeditionFlavor {
         Flowers,

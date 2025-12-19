@@ -68,7 +68,7 @@ public class ShowMarkedNodesOnMapPatch {
         public static void renderImage(MapRoomNode __instance, SpriteBatch sb) {
             int images = 0;
 
-            float imgWidth = ReflectionHacks.getPrivate(__instance, MapRoomNode.class, "IMG_WIDTH");
+            Integer imgWidth = ReflectionHacks.getPrivate(__instance, MapRoomNode.class, "IMG_WIDTH");
             float imgHeight = 48.0F;
             float scale = ReflectionHacks.getPrivate(__instance, MapRoomNode.class, "scale");
             float offsetX = ReflectionHacks.getPrivateStatic(MapRoomNode.class, "OFFSET_X");
@@ -77,8 +77,8 @@ public class ShowMarkedNodesOnMapPatch {
             float x = (float) __instance.x * spacingX + offsetX - 64.0F + __instance.offsetX;
             float y = (float) __instance.y * Settings.MAP_DST_Y + offsetY + DungeonMapScreen.offsetY - 64.0F + __instance.offsetY;
 
-            ArrayList<Float> orderOffsetX = new ArrayList<>(Arrays.asList(1f, 1f, -1f, -1f, 1.5f, 0f, -1.5f, 0f));
-            ArrayList<Float> orderOffsetY = new ArrayList<>(Arrays.asList(1f, -1f, -1f, 1f, 0f, -1.5f, 0f, 1.5f));
+            ArrayList<Float> orderOffsetX = new ArrayList<>(Arrays.asList(1f, 1f, 0f, 0f, 1.5f, .5f, -.5f, .5f));
+            ArrayList<Float> orderOffsetY = new ArrayList<>(Arrays.asList(1f, 0f, 0f, 1f, .5f, -.5f, .5f, 1.5f));
 
 
             for(Pair<String, Texture> pair : ImageField.images.get(__instance)) {

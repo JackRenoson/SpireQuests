@@ -43,7 +43,7 @@ public class QuestBoardQuest {
         this.hb = new Hitbox(300.0F * Settings.xScale, 64.0F * Settings.yScale);
         this.previewHb = new Hitbox(512.0F * Settings.xScale, 716.0F * Settings.yScale);
 
-        this.tips = quest.getPreviewTips();
+        this.tips = new ArrayList<>(quest.getPreviewTips());
         if (Anniv8Mod.trophyTooltipsEnabled()){
             tips.add(this.questStats.trophyTip);
         }

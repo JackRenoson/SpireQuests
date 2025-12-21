@@ -478,7 +478,7 @@ public class QuestStatsScreen implements DropdownMenuListener {
         }
 
         float offset = 0.0f;
-        if (selectedQuest.questRewards.isEmpty()) {
+        if (selectedQuest.questRewards.isEmpty() || selectedQuest.useDefaultReward) {
             rewardBoxes.add(new StatRewardBox(selectedQuest, REWARD_X, yLine));
         } else {
             for (QuestReward r : selectedQuest.questRewards) {

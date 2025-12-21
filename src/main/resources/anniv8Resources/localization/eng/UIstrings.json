@@ -103,7 +103,9 @@
       "Random Relic Reward",
       "Gold Reward",
       "Other Reward",
-      "Max HP Reward"
+      "Max HP Reward",
+      "Random Quest Reward",
+      "This quest has a random reward each run!"
     ]
   },
   "${ModID}:StatisticsFTUE": {

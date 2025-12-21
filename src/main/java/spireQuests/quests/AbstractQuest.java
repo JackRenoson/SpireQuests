@@ -6,12 +6,14 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.potions.AbstractPotion.PotionRarity;
+import com.megacrit.cardcrawl.relics.AbstractRelic.RelicTier;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import javassist.CtBehavior;
 import spireQuests.Anniv8Mod;
-import spireQuests.quests.gk.BountyICQuest;
 import spireQuests.util.QuestStrings;
 import spireQuests.util.QuestStringsUtils;
+import spireQuests.util.WeightedList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -218,6 +220,45 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         questRewards.add(reward);
 
         return this;
+    }
+
+    protected final AbstractQuest addGenericReward() {
+        useDefaultReward = true;
+
+        if (CardCrawlGame.isInARun()) {
+            QuestReward reward = getGenericRewardWeightedList().getRandom(AbstractDungeon.miscRng);
+            questRewards.add(reward);
+        }
+        this.rewardsText = getRewardsText();
+
+        return this;
+    }
+    
+    private WeightedList<QuestReward> getGenericRewardWeightedList() {
+        WeightedList<QuestReward> rewards = new WeightedList<>();
+        
+        // Gold rewards rounded to 5s.
+        switch (this.difficulty) {
+            default:
+            case EASY:
+                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(50, 70) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.COMMON, true)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(5, 7)), 2);
+                break;
+            case NORMAL:
+                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(90, 120) + 2) / 5) * 5), 4);
+                rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.UNCOMMON, true)), 3);
+                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(8, 10)), 2);
+                break;
+            case HARD:
+                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(140, 180) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.RandomRelicReward(RelicTier.COMMON), 2);
+                rewards.add(new QuestReward.RandomRelicReward(), 1);
+                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(12, 14)), 2);
+                break;
+        }
+        
+        return rewards;
     }
 
     public boolean complete() {

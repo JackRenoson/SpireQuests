@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class ShowMarkedNodesOnMapPatch {
     @SpirePatch(clz = MapRoomNode.class, method = SpirePatch.CLASS)
@@ -122,8 +123,9 @@ public class ShowMarkedNodesOnMapPatch {
             ArrayList<Float> orderOffsetX = new ArrayList<>(Arrays.asList(1f, 1f, 0f, 0f, 1.5f, .5f, -.5f, .5f));
             ArrayList<Float> orderOffsetY = new ArrayList<>(Arrays.asList(1f, 0f, 0f, 1f, .5f, -.5f, .5f, 1.5f));
 
-
-            for(Pair<String, Texture> pair : ImageField.images.get(__instance)) {
+            ArrayList<Pair<String, Texture>> imageList = ImageField.images.get(__instance);
+            imageList.sort(Comparator.comparing(Pair::getKey));
+            for(Pair<String, Texture> pair : imageList) {
                 Texture image = pair.getValue();
                 if(images >= 8){
                     LogManager.getLogger().info("Too many markings! Only showing the first 8.");

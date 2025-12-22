@@ -21,6 +21,13 @@ public class ShowMarkedNodesOnMapPatch {
     public static class ImageField {
         public static final SpireField<ArrayList<Pair<String, Texture>>> images = new SpireField<>(ArrayList::new);
 
+        /**
+         * Mark a node on the map.
+         * @param node Spot on map to mark.
+         * @param questID Quest that makes the mark.
+         * @param texture Texture to use as mark.
+         * @return whether the marking was successful.
+         */
         public static boolean MarkNode(MapRoomNode node, String questID, Texture texture){
             ArrayList<Pair<String, Texture>> textures = images.get(node);
             if(textures.size() >= 8){
@@ -32,8 +39,21 @@ public class ShowMarkedNodesOnMapPatch {
             return true;
         }
 
+        /**
+         * Checks if a node has a mark of a quest.
+         * @param node Node to check.
+         * @param questID Quest to check against.
+         * @return if a mark made by quest QuestID is found on the node.
+         */
         public static boolean CheckMarks(MapRoomNode node, String questID){ return CheckMarks(node, questID, null); }
 
+        /**
+         * Checks if a node has a mark of a quest.
+         * @param node Node to check.
+         * @param questID Quest to check against.
+         * @param texture texture to check.
+         * @return if a mark with Texture texture made by quest QuestID is found on the node.
+         */
         public static boolean CheckMarks(MapRoomNode node, String questID, Texture texture){
             for(Pair<String, Texture> pair : images.get(node)){
                 if(pair.getKey().equals(questID) && (texture == null || pair.getValue().equals(texture))){
@@ -43,8 +63,17 @@ public class ShowMarkedNodesOnMapPatch {
             return false;
         }
 
+        /**
+         * Clears all marks of a quest on the map.
+         * @param questID ID of quest of which marks to remove.
+         */
         public static void ClearMarks(String questID){ ClearMarks(questID, null); }
 
+        /**
+         * Clears all marks with specific Texture of a quest on the map.
+         * @param questID ID of quest of which marks to remove.
+         * @param texture texture of marks to remove.
+         */
         public static void ClearMarks(String questID, Texture texture){
             for(ArrayList<MapRoomNode> row : AbstractDungeon.map){
                 for(MapRoomNode node : row){
@@ -53,8 +82,18 @@ public class ShowMarkedNodesOnMapPatch {
             }
         }
 
+        /**
+         * Clears all marks of a quest on a node.
+         * @param questID ID of quest of which marks to remove.
+         */
         public static void ClearMark(MapRoomNode node, String questID){ ClearMark(node, questID, null); }
 
+        /**
+         * Clears all marks with specific Texture of a quest on a node.
+         * @param node node from which to remove marks.
+         * @param questID ID of quest of which marks to remove.
+         * @param texture texture of marks to remove.
+         */
         public static void ClearMark(MapRoomNode node, String questID, Texture texture){
             ArrayList<Pair<String, Texture>> textures = images.get(node);
             textures.removeIf(pair -> pair.getKey().equals(questID) && (texture == null || pair.getValue().equals(texture)));
@@ -62,6 +101,9 @@ public class ShowMarkedNodesOnMapPatch {
         }
     }
 
+    /**
+     * Patch that adds rendering of marks to the render function that renders map icons
+     */
     @SpirePatch(clz = MapRoomNode.class, method = "render", paramtypez = {SpriteBatch.class})
     public static class RenderPatch {
         @SpireInsertPatch(locator = Locator.class)

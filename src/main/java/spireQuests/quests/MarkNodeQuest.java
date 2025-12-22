@@ -13,17 +13,36 @@ import java.util.ArrayList;
 
 public interface MarkNodeQuest {
 
+    /**
+     * You should likely need to write this, but not use it yourself.
+     * This is called to mark nodes when the quest is picked up.
+     * Make sure to use rng for any random selection (not rng()!) and make sure rng is used the same on pickup, and on save and reload.
+     * @param map The map of slay the spire, as a list of rows, which are lists of nodes.
+     * @param rng the variables used to randomly determine stuff
+     */
     void markNodes(ArrayList<ArrayList<MapRoomNode>> map, Random rng);
 
-    default Random rng() { //Automatically generates a new Random based on seed, act number, and quest id.
+    /**
+     * You should likely not need to use this.
+     * Automatically generate a new Random based on seed, act number, and quest id.
+     * Override this if your quest has more variables that you want to have influence rng (like TreasureMapQuest)
+     * @return new Random for determining stuff randomly
+     */
+    default Random rng() {
         return new Random(Settings.seed ^ AbstractDungeon.actNum * 31L ^ ((AbstractQuest) this).id.hashCode());
     }
 
+    /**
+     * Field to track if a quest has already marked a node, generally don't worry about it.
+     */
     @SpirePatch2(clz = AbstractDungeon.class, method = SpirePatch.CLASS)
     public static class MarkedField {
         public static SpireField<Boolean> marked = new SpireField<>(() -> false);
     }
 
+    /**
+     * Patches for loading markings at a new act, and after saving and resuming a run. Again, don't worry about it.
+     */
     @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class})
     @SpirePatch2(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class, SaveFile.class})
     public static class MarkNodesOnGetDungeonPatch {

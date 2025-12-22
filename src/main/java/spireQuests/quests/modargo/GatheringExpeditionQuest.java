@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.rooms.ShopRoom;
 import com.megacrit.cardcrawl.rooms.TreasureRoom;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.QuestTriggers;
+import spireQuests.questStats.StatRewardBox;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.quests.MarkNodeQuest;
 import spireQuests.quests.QuestReward;
@@ -58,6 +59,17 @@ public class GatheringExpeditionQuest extends AbstractQuest implements MarkNodeQ
             case Minerals: return questStrings.EXTRA_TEXT[1];
             default: return questStrings.EXTRA_TEXT[2];
         }
+    }
+
+    @Override
+    public ArrayList<StatRewardBox> getStatRewardBoxes() {
+        ArrayList<StatRewardBox> ret = new ArrayList<>();
+
+        ret.add(new StatRewardBox(new QuestReward.RelicReward(new FloralGarland())));
+        ret.add(new StatRewardBox(new QuestReward.RelicReward(new SpireAlloyHelmet())));
+        ret.add(new StatRewardBox(new QuestReward.RelicReward(new JewelledBauble())));
+
+        return ret;
     }
 
     private String getTrackerText() {

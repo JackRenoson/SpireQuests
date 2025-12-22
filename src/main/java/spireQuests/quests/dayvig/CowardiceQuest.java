@@ -16,7 +16,7 @@ public class CowardiceQuest extends AbstractQuest {
                 .triggerCondition(this::dodgedElite)
                 .add(this);
 
-        addReward(new QuestReward.RelicReward(AbstractDungeon.returnRandomRelic(AbstractRelic.RelicTier.COMMON)));
+        addReward(new QuestReward.RandomRelicReward(AbstractRelic.RelicTier.COMMON));
     }
 
     public boolean dodgedElite(MapRoomNode currNode){

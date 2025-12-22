@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import javassist.CtBehavior;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
+import spireQuests.questStats.StatRewardBox;
 import spireQuests.util.QuestStrings;
 import spireQuests.util.QuestStringsUtils;
 import spireQuests.util.WeightedList;
@@ -421,6 +422,23 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         for (Tracker t : trackers) {
             t.refreshState();
         }
+    }
+
+    // Most quests can have these dynamically generated using the code below, however if your
+    // quest has a special reward structure or dynamic rewards, you may need to ovveride
+    // this function and manually define how Quest Log displays rewards.
+    public ArrayList<StatRewardBox> getStatRewardBoxes() {
+        ArrayList<StatRewardBox> ret = new ArrayList<>();
+
+        if (this.questRewards.isEmpty() || this.useDefaultReward) {
+            ret.add(new StatRewardBox(this));
+        } else {
+            for (QuestReward r : this.questRewards) {
+                ret.add(new StatRewardBox(r));
+            }
+        }
+
+        return ret;
     }
 
     public void loadSave(String[] questData, QuestReward.QuestRewardSave[] questRewardSaves) {

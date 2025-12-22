@@ -80,8 +80,8 @@ public class QuestStatsScreen implements DropdownMenuListener {
     private static final float ALL_QUEST_STAT_Y = Y_ANCHOR - (285.0F * Settings.yScale);
     private static final float QUEST_STAT_Y = Y_ANCHOR - (525.0F * Settings.yScale);
 
-    private static final float REWARD_X = LEFT_ALIGN + (35.0F * Settings.xScale);
-    private static final float REWARD_OFFSET = 150.0F * Settings.xScale;
+    private static final float REWARD_X = LEFT_ALIGN + (25.0F * Settings.scale);
+    private static final float REWARD_OFFSET = 150.0F * Settings.scale;
     private static final float REWARD_Y = Y_ANCHOR - (375.0F * Settings.yScale);
     
     private static final float BADGE_X = BANNER_X + (53.0F * Settings.scale);
@@ -363,7 +363,7 @@ public class QuestStatsScreen implements DropdownMenuListener {
         // Description
         FontHelper.renderSmartText(
             sb, FontHelper.cardDescFont_N, 
-            selectedQuest.description, 
+            selectedQuest.getDescription(), 
             LEFT_ALIGN, QUEST_DESCRIPTION_Y, QUEST_DESCRIPTION_LENGTH,
             FontHelper.cardDescFont_N.getLineHeight(),
             Settings.CREAM_COLOR
@@ -465,7 +465,7 @@ public class QuestStatsScreen implements DropdownMenuListener {
             badgesToDraw.add(button_texture);
         }
 
-        this.descriptionHeight = FontHelper.getSmartHeight(FontHelper.cardDescFont_N, selectedQuest.description,
+        this.descriptionHeight = FontHelper.getSmartHeight(FontHelper.cardDescFont_N, selectedQuest.getDescription(),
                 QUEST_DESCRIPTION_LENGTH, FontHelper.cardDescFont_N.getLineHeight()
             );
         this.descriptionHeight -= FontHelper.cardDescFont_N.getLineHeight();
@@ -478,13 +478,11 @@ public class QuestStatsScreen implements DropdownMenuListener {
         }
 
         float offset = 0.0f;
-        if (selectedQuest.questRewards.isEmpty() || selectedQuest.useDefaultReward) {
-            rewardBoxes.add(new StatRewardBox(selectedQuest, REWARD_X, yLine));
-        } else {
-            for (QuestReward r : selectedQuest.questRewards) {
-                rewardBoxes.add(new StatRewardBox(r, REWARD_X + offset, yLine));
-                offset += REWARD_OFFSET;
-            }
+
+        rewardBoxes = selectedQuest.getStatRewardBoxes();
+        for (StatRewardBox b : rewardBoxes) {
+            b.move(REWARD_X + offset, yLine);
+            offset += REWARD_OFFSET;
         }
         Collections.reverse(rewardBoxes);
     }

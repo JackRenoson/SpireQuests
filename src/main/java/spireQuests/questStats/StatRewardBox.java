@@ -114,6 +114,20 @@ public class StatRewardBox implements IUIElement {
         this.hb = new Hitbox(xPos, yPos, FRAME_X, FRAME_Y);
     }
 
+    public StatRewardBox(QuestReward reward) {
+        this(reward, 0.0F, 0.0F);
+    }
+
+    public StatRewardBox(AbstractQuest q) {
+        this(q, 0.0F, 0.0F);
+    }
+
+    public void move(float xPos, float yPos){
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.hb.translate(xPos, yPos);
+    }
+
     public void render(SpriteBatch sb) {
         if (this.hb.hovered) {
             sb.draw(FRAME_HOVER, xPos, yPos, FRAME_X, FRAME_Y);            

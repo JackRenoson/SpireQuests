@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import static spireQuests.Anniv8Mod.makeID;
 
+// TODO: Fix quest stats rewards
 public class BountyICQuest extends AbstractQuest {
     private static final String ID = makeID(BountyICQuest.class.getSimpleName());
 
@@ -40,6 +41,7 @@ public class BountyICQuest extends AbstractQuest {
         titleScale = 0.9f;
 
         this.isAutoComplete = true;
+        this.useDefaultReward = false;
     }
 
     @Override

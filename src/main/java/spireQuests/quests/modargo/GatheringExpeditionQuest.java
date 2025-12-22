@@ -1,9 +1,6 @@
 package spireQuests.quests.modargo;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -11,15 +8,12 @@ import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
-import com.megacrit.cardcrawl.relics.Shovel;
 import com.megacrit.cardcrawl.rooms.ShopRoom;
 import com.megacrit.cardcrawl.rooms.TreasureRoom;
-import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.quests.MarkNodeQuest;
-import spireQuests.quests.QuestManager;
 import spireQuests.quests.QuestReward;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.quests.modargo.relics.FloralGarland;

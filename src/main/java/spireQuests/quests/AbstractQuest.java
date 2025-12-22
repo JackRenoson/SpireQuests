@@ -10,7 +10,6 @@ import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import javassist.CtBehavior;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
-import spireQuests.quests.gk.BountyICQuest;
 import spireQuests.util.QuestStrings;
 import spireQuests.util.QuestStringsUtils;
 

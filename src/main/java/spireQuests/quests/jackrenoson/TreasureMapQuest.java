@@ -1,7 +1,6 @@
 package spireQuests.quests.jackrenoson;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -15,8 +14,6 @@ import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.quests.MarkNodeQuest;
-import spireQuests.quests.QuestReward;
-import spireQuests.quests.modargo.MulticlassQuest;
 import spireQuests.util.TexLoader;
 
 import java.util.ArrayList;

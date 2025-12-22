@@ -4,17 +4,20 @@ import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import java.util.ArrayList;
 
-public interface MarkNodeQuest{
+public interface MarkNodeQuest {
 
     void markNodes(ArrayList<ArrayList<MapRoomNode>> map, Random rng);
 
-    Random rng(); //Make sure you return a set Random, and do not create a new one every time this is run!
+    default Random rng() { //Automatically generates a new Random based on seed, act number, and quest id.
+        return new Random(Settings.seed ^ AbstractDungeon.actNum * 31L ^ ((AbstractQuest) this).id.hashCode());
+    }
 
     @SpirePatch2(clz = AbstractDungeon.class, method = SpirePatch.CLASS)
     public static class MarkedField {

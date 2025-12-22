@@ -1,17 +1,22 @@
 package spireQuests.quests;
 
+import basemod.helpers.CardPowerTip;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.potions.AbstractPotion.PotionRarity;
+import com.megacrit.cardcrawl.relics.AbstractRelic.RelicTier;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import javassist.CtBehavior;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.util.QuestStrings;
 import spireQuests.util.QuestStringsUtils;
+import spireQuests.util.WeightedList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -179,6 +184,28 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         for (QuestReward reward : questRewards) {
             reward.addTooltip(tipList);
         }
+
+        boolean hasQuestboundItems = false;
+
+        if(questboundRelics != null){
+            hasQuestboundItems = true;
+
+            for (AbstractRelic r : questboundRelics){
+                tipList.add(new PowerTip(r.name, r.description));
+            }
+        }
+
+        if(questboundCards != null){
+            hasQuestboundItems = true;
+
+            for (AbstractCard c : questboundCards){
+                tipList.add(new CardPowerTip(c));
+            }
+        }
+
+        if(hasQuestboundItems){
+            tipList.add(new PowerTip(Anniv8Mod.keywords.get("Questbound").PROPER_NAME, Anniv8Mod.keywords.get("Questbound").DESCRIPTION));
+        }
     }
 
     /**
@@ -223,6 +250,45 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         return this;
     }
 
+    protected final AbstractQuest addGenericReward() {
+        useDefaultReward = true;
+
+        if (CardCrawlGame.isInARun()) {
+            QuestReward reward = getGenericRewardWeightedList().getRandom(AbstractDungeon.miscRng);
+            questRewards.add(reward);
+        }
+        this.rewardsText = getRewardsText();
+
+        return this;
+    }
+    
+    private WeightedList<QuestReward> getGenericRewardWeightedList() {
+        WeightedList<QuestReward> rewards = new WeightedList<>();
+        
+        // Gold rewards rounded to 5s.
+        switch (this.difficulty) {
+            default:
+            case EASY:
+                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(50, 70) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.COMMON, true)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(5, 7)), 2);
+                break;
+            case NORMAL:
+                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(90, 120) + 2) / 5) * 5), 4);
+                rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.UNCOMMON, true)), 3);
+                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(8, 10)), 2);
+                break;
+            case HARD:
+                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(140, 180) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.RandomRelicReward(RelicTier.COMMON), 2);
+                rewards.add(new QuestReward.RandomRelicReward(), 1);
+                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(12, 14)), 2);
+                break;
+        }
+        
+        return rewards;
+    }
+
     public boolean complete() {
         if (failed) return false;
         if (complete) {
@@ -234,6 +300,9 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         for (Tracker tracker : trackers) {
             if (!tracker.isComplete()) return false;
         }
+
+
+
         complete = true;
         trackers.clear();
         triggers.clear();
@@ -917,6 +986,13 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         return null;
     }
 
+    // Similar to Questbound cards, but for Relics!
+    public ArrayList<AbstractRelic> questboundRelics;
+    // Setting removeQBDup to true will make it remove from pools when obtained.
+    // Setting returnQPRelics to true adds them to the pool again once the Quest is complete. (Ignored if the first boolean is set to false)
+
+    public boolean removeQuestboundDuplicate = true;
+    public boolean returnQuestboundRelics = true;
     @SpirePatch(clz = AbstractDungeon.class, method = "nextRoomTransition", paramtypez = {SaveFile.class})
     public static class AutoCompleteQuestLater {
         @SpireInsertPatch(locator = Locator.class)

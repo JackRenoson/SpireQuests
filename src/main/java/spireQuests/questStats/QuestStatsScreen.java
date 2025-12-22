@@ -288,10 +288,10 @@ public class QuestStatsScreen implements DropdownMenuListener {
     private void renderSummary(SpriteBatch sb) {
         FontHelper.renderFont(sb, FontHelper.losePowerFont, uiStrings.TEXT[5], LEFT_ALIGN, QUEST_NAME_Y, Settings.CREAM_COLOR);
 
-        renderProgressBarBG(sb, LOCK_COLOR, allQuests.size());
-        renderProgressBarBG(sb, BRONZE_COLOR, this.selectedQuestStats.bronzes);
-        renderProgressBarBG(sb, SILVER_COLOR, this.selectedQuestStats.silvers);
-        renderProgressBarBG(sb, GOLD_COLOR, this.selectedQuestStats.golds);
+        renderProgressBarBG(sb, LOCK_COLOR, allQuests.size(), false);
+        renderProgressBarBG(sb, BRONZE_COLOR, this.selectedQuestStats.bronzes, true);
+        renderProgressBarBG(sb, SILVER_COLOR, this.selectedQuestStats.silvers, true);
+        renderProgressBarBG(sb, GOLD_COLOR, this.selectedQuestStats.golds, true);
 
         sb.setColor(Color.WHITE);
         sb.draw(PROGRESS_BORDER, PROGRESS_BORDER_X, PROGRESS_BORDER_Y, PROGRESS_BAR_WIDTH, PROGRESS_BORDER.getHeight() * Settings.yScale);
@@ -332,14 +332,19 @@ public class QuestStatsScreen implements DropdownMenuListener {
         );
     }
 
-    private void renderProgressBarBG(SpriteBatch sb, Color color, int completed) {
+    private void renderProgressBarBG(SpriteBatch sb, Color color, int completed, boolean canFlash) {
+
+        if (completed <= 0) {
+            return;
+        }
+
         float percent = (float) completed / (float) allQuests.size();
         float width = (PROGRESS_BAR_WIDTH * percent) - (PROGRESS_PADDING_X * 2.0F);
 
         sb.setColor(color);
         sb.draw(PROGRESS_BAR, PROGRESS_BAR_X, PROGRESS_BAR_Y, width, PROGRESS_BAR.getHeight() * Settings.yScale);
 
-        if (percent >= FLASH_THRESH) { //
+        if (canFlash && percent >= FLASH_THRESH) { //
             Color highlight = color.cpy().add(0.2F, 0.2F, 0.2F, 0.0F);
             highlight.a = this.flashTimer * 0.5f;
             sb.setColor(highlight);
@@ -473,7 +478,7 @@ public class QuestStatsScreen implements DropdownMenuListener {
         }
 
         float offset = 0.0f;
-        if (selectedQuest.questRewards.isEmpty()) {
+        if (selectedQuest.questRewards.isEmpty() || selectedQuest.useDefaultReward) {
             rewardBoxes.add(new StatRewardBox(selectedQuest, REWARD_X, yLine));
         } else {
             for (QuestReward r : selectedQuest.questRewards) {

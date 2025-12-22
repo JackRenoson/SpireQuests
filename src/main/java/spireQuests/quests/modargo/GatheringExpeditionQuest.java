@@ -36,6 +36,7 @@ public class GatheringExpeditionQuest extends AbstractQuest implements MarkNodeQ
     private static final Texture FLOWERS_IMAGE = TexLoader.getTexture(Anniv8Mod.makeContributionPath("modargo", "FlowersMapIcon.png"));
     private static final Texture MINERALS_IMAGE = TexLoader.getTexture(Anniv8Mod.makeContributionPath("modargo", "MineralsMapIcon.png"));
     private static final Texture GEMS_IMAGE = TexLoader.getTexture(Anniv8Mod.makeContributionPath("modargo", "GemsMapIcon.png"));
+    private final Random rng = new Random((long) id.hashCode());
 
     public GatheringExpeditionQuest() {
         super(QuestType.LONG, QuestDifficulty.NORMAL);
@@ -128,7 +129,7 @@ public class GatheringExpeditionQuest extends AbstractQuest implements MarkNodeQ
 
     @Override
     public Random rng() {
-        return new Random();
+        return rng;
     }
 
     private enum ExpeditionFlavor {

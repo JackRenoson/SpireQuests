@@ -1,45 +1,56 @@
 package spireQuests.quests.jackrenoson;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.relics.Shovel;
 import com.megacrit.cardcrawl.rooms.RestRoom;
-import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.quests.MarkNodeQuest;
-import spireQuests.quests.QuestManager;
-import spireQuests.quests.modargo.GatheringExpeditionQuest;
 import spireQuests.util.TexLoader;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.function.Function;
 
 import static org.apache.commons.lang3.math.NumberUtils.min;
 import static spireQuests.Anniv8Mod.makeID;
 
 public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
     public static final Texture X = TexLoader.getTexture(Anniv8Mod.makeContributionPath("jackrenoson", "X.png"));
-    private final MapRoomNode origin;
+    private MapRoomNode origin;
     public static final String id = makeID(TreasureMapQuest.class.getSimpleName());
+    private final Random rng = new Random((long) id.hashCode());
 
     public TreasureMapQuest() {
         super(QuestType.SHORT, QuestDifficulty.NORMAL);
         origin = AbstractDungeon.getCurrMapNode();
+
         new TriggerTracker<>(QuestTriggers.ENTER_ROOM, 1)
                 .triggerCondition(r -> ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(r, id))
                 .add(this);
+
+        new Tracker() { //Hijacking the tracker system to save origin node.
+            public boolean isComplete() { return false; }
+            public String progressString() { return ""; }
+
+            @Override
+            public String saveData() {
+                return origin.x+","+origin.y;
+            }
+
+            @Override
+            public void loadData(String data) {
+                String[] parts = data.split(",");
+                int x = Integer.parseInt(parts[0]);
+                int y = Integer.parseInt(parts[1]);
+                origin = AbstractDungeon.map.get(y).get(x);
+            }
+        }.hide();
     }
 
     @Override
@@ -55,11 +66,13 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
 
     @Override
     public void onComplete() {
+        super.onComplete();
         AbstractDungeon.rareRelicPool.add(Shovel.ID);
     }
 
     @Override
     public void onFail() {
+        super.onFail();
         AbstractDungeon.rareRelicPool.add(Shovel.ID);
     }
 
@@ -101,12 +114,11 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
             validRooms.add(topRests.get(rng.random(0, topRests.size() - 1)));
         }
         MapRoomNode targetRoom = validRooms.get(rng.random(0, validRooms.size()-1));
-        System.out.println("TARGET:" + targetRoom);
         ShowMarkedNodesOnMapPatch.ImageField.MarkNode(targetRoom, id, X);
     }
 
     @Override
     public Random rng() {
-        return new Random();
+        return rng;
     }
 }

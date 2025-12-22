@@ -228,6 +228,7 @@ public class QuestboundModPatch {
     public static class applyStartOfCombatPreDrawLogic {
         @SpireInsertPatch(locator = Locator.class)
         public static void update() {
+            getQuestbound().filter(q -> !questboundEnabled() || q.overrideQuestboundCards() != null).forEach(q -> q.questboundCards.forEach(c -> Wiz.atb(new ShowTempCardInDrawPileAction(c, true))));
             if (!questboundEnabled()) {
                 List<AbstractCard> questboundCards = QuestboundCardsToShowField.cards.get(AbstractDungeon.player);
                 questboundCards.forEach(c -> Wiz.atb(new ShowTempCardInDrawPileAction(c, true)));

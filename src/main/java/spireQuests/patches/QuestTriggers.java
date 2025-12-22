@@ -13,11 +13,12 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.relics.Boot;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Ectoplasm;
 import com.megacrit.cardcrawl.rewards.chests.AbstractChest;
 import com.megacrit.cardcrawl.rewards.chests.BossChest;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.ShopRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
@@ -26,7 +27,6 @@ import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import javassist.CtBehavior;
 import spireQuests.Anniv8Mod;
 import spireQuests.quests.Trigger;
-import spireQuests.quests.ramchops.patch.ShopMoneyTracker;
 
 public class QuestTriggers {
     public static final Trigger<Void> DECK_CHANGE = new Trigger<>();
@@ -46,11 +46,11 @@ public class QuestTriggers {
     public static final Trigger<AbstractPotion> USE_POTION = new Trigger<>();
 
     public static final Trigger<Void> IMPENDING_DAY_KILL = new Trigger<>();
+    public static final Trigger<Void> BOOT_TRIGGER = new Trigger<>();
     public static final Trigger<AbstractOrb> CHANNEL_ORB = new Trigger<>();
     public static final Trigger<AbstractOrb> EVOKE_ORB = new Trigger<>();
     public static final Trigger<Integer> ACT_CHANGE = new Trigger<>();
     public static final Trigger<AbstractChest> CHEST_OPENED = new Trigger<>(); //NOTE: This includes both normal and boss chests.
-
 
     public static final Trigger<Integer> HEALTH_HEALED = new Trigger<>();
     public static final Trigger<Void> MAX_HEALTH_CHANGED = new Trigger<>();
@@ -319,6 +319,21 @@ public class QuestTriggers {
         @Override
         public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
             Matcher finalMatcher = new Matcher.MethodCallMatcher(TopPanel.class, "destroyPotion");
+            return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+        }
+    }
+    @SpirePatch(clz = Boot.class, method = "onAttackToChangeDamage")
+    public static class BootTracker {
+        @SpireInsertPatch(locator = BootLocator.class)
+        public static void bootin() {
+            BOOT_TRIGGER.trigger();
+        }
+    }
+
+    private static class BootLocator extends SpireInsertLocator {
+        @Override
+        public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+            Matcher finalMatcher = new Matcher.MethodCallMatcher(Boot.class, "flash");
             return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
         }
     }

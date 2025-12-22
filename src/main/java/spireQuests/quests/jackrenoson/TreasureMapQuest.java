@@ -59,10 +59,12 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
 
         new TriggerTracker<>(QuestTriggers.ENTER_ROOM, 1)
                 .triggerCondition(r -> ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(r, id))
+                .setFailureTrigger(QuestTriggers.ACT_CHANGE)
                 .add(this);
 
         new SaveTracker(startX, startY).hide().add(this);
 
+        isAutoFail = true;
     }
 
     @Override

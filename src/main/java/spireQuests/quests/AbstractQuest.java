@@ -76,6 +76,8 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     //If true, the quest will automatically complete when the player leaves the room with the conditions fulfilled.
     public boolean isAutoComplete;
 
+    //If true, the quest will automatically fail when the player leaves the room with the fail conditions fulfilled.
+    public boolean isAutoFail;
     /*
     trackers that require another tracker to be completed first
 
@@ -98,6 +100,7 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
 
         complete = false;
         isAutoComplete = false;
+        isAutoFail = false;
 
         questStrings = QuestStringsUtils.getQuestString(id);
         if (questStrings == null) {
@@ -919,12 +922,20 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         @SpireInsertPatch(locator = Locator.class)
         public static void enteringRoomPatch(AbstractDungeon __instance, SaveFile file) {
             if (AbstractDungeon.currMapNode != null) {
-                AbstractQuest q = QuestManager.quests().stream()
+                AbstractQuest q1 = QuestManager.quests().stream()
                         .filter(quest -> quest.isAutoComplete && quest.isCompleted())
                         .findAny()
                         .orElse(null);
-                if(q != null) {
-                    QuestManager.completeQuest(q);
+                if(q1 != null) {
+                    QuestManager.completeQuest(q1);
+                }
+
+                AbstractQuest q2 = QuestManager.quests().stream()
+                        .filter(quest -> quest.isAutoFail && quest.isFailed())
+                        .findAny()
+                        .orElse(null);
+                if(q2 != null) {
+                    QuestManager.failQuest(q2);
                 }
             }
         }

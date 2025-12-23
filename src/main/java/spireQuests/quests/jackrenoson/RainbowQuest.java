@@ -1,11 +1,9 @@
 package spireQuests.quests.jackrenoson;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.relics.Boot;
 import com.megacrit.cardcrawl.relics.PrismaticShard;
 import com.megacrit.cardcrawl.relics.QuestionCard;
 import com.megacrit.cardcrawl.rooms.ShopRoom;
@@ -66,14 +64,8 @@ public class RainbowQuest extends AbstractQuest {
     @Override
     public void onStart() {
         super.onStart();
-        AbstractDungeon.getCurrRoom().spawnRelicAndObtain(Settings.WIDTH * 0.95F, Settings.HEIGHT / 2.0F, new PrismaticShard());
         AbstractDungeon.shopRelicPool.remove(PrismaticShard.ID);
         AbstractDungeon.uncommonRelicPool.remove(QuestionCard.ID);
-    }
-
-    @Override
-    public void onComplete() {
-        AbstractDungeon.player.loseRelic(new PrismaticShard().relicId);
     }
 
     @Override

@@ -7,8 +7,11 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.random.Random;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Boot;
 import com.megacrit.cardcrawl.relics.Shovel;
 import com.megacrit.cardcrawl.rooms.RestRoom;
+import com.megacrit.cardcrawl.rooms.ShopRoom;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
@@ -17,6 +20,8 @@ import spireQuests.quests.MarkNodeQuest;
 import spireQuests.util.TexLoader;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
 import static spireQuests.Anniv8Mod.makeID;
 
 public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
@@ -69,6 +74,12 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
 
     @Override
     public boolean canSpawn(){
+        if(AbstractDungeon.getCurrRoom() instanceof ShopRoom) {
+            ShopRoom shop = (ShopRoom) AbstractDungeon.getCurrRoom();
+            for(AbstractRelic r : shop.relics) {
+                if(Objects.equals(r.relicId, Shovel.ID)) return false;
+            }
+        }
         return !AbstractDungeon.player.hasRelic(Shovel.ID);
     }
 

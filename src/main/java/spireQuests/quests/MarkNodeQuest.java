@@ -32,7 +32,7 @@ public interface MarkNodeQuest {
     }
 
     /**
-     * Field to track if a quest has already marked a node.
+     * Field to track if the marking process has already been done for the act
      *///generally, you don't need to worry about it.
     @SpirePatch2(clz = AbstractDungeon.class, method = SpirePatch.CLASS)
     public static class MarkedField {

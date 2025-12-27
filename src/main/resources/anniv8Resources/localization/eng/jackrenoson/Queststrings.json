@@ -21,5 +21,16 @@
     "TRACKER_TEXT": [
       "Go to the X-marked Rest Site."
     ]
+  },
+  "${ModID}:BoatRepairQuest": {
+    "TITLE": "Boat Repair",
+    "DESCRIPTION": "You find a broken Boat. All it needs to work again is an #yAnchor, #yHorn #yCleat, and #yCaptains #yWheel. There are some markings on a map where you might find some...",
+    "AUTHOR": "JackRenoson",
+    "REWARD": "Boat.",
+    "TRACKER_TEXT": [
+      "Find an #yAnchor.",
+      "Find a #yHorn #yCleat.",
+      "Find a #yCaptains #yWheel."
+    ]
   }
 }

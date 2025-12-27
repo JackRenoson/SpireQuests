@@ -29,14 +29,14 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
     private int startX, startY;
     public static final String id = makeID(TreasureMapQuest.class.getSimpleName());
 
-    class SaveTracker extends Tracker { //Hijacking the tracker system to save origin node.
+    static class SaveNodeTracker extends Tracker { //Hijacking the tracker system to save origin node.
         private int startX, startY;
-        public SaveTracker(int x, int y){
+        public SaveNodeTracker(int x, int y){
             super();
             startX = x;
             startY = y;
         }
-        public boolean isComplete() { return false; }
+        public boolean isComplete() { return true; }
         public String progressString() { return ""; }
 
         @Override
@@ -67,7 +67,7 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
                 .setFailureTrigger(QuestTriggers.ACT_CHANGE)
                 .add(this);
 
-        new SaveTracker(startX, startY).hide().add(this);
+        new SaveNodeTracker(startX, startY).hide().add(this);
 
         isAutoFail = true;
     }
@@ -122,7 +122,7 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
                         }
                         if (curr.hasEdges()) {
                             for (MapEdge edge : curr.getEdges()) {
-                                MapRoomNode node = getNode(edge.dstX, edge.dstY);
+                                MapRoomNode node = getNode(edge);
                                 if(node!=null) {
                                     toBeChecked.add(node);
                                 }
@@ -138,18 +138,6 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
         }
         MapRoomNode targetRoom = validRooms.get(rng.random(0, validRooms.size()-1));
         ShowMarkedNodesOnMapPatch.ImageField.MarkNode(targetRoom, id, X);
-    }
-
-    private MapRoomNode getNode(int x, int y){
-        if(y==-1){
-            return null;
-        }
-        for (MapRoomNode node : AbstractDungeon.map.get(y)) {
-            if (x == node.x) {
-                return node;
-            }
-        }
-        return null;
     }
 
     @Override

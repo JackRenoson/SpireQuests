@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
@@ -30,5 +31,33 @@ public interface MarkNodeQuest {
      */
     default Random rng() {
         return new Random(Settings.seed ^ AbstractDungeon.actNum * 31L ^ ((AbstractQuest) this).id.hashCode());
+    }
+
+
+    /**
+     * Helper function that gives the destination of an edge, for finding a reachable node of a node
+     * @param edge
+     * @return reachable node
+     */
+    default MapRoomNode getNode(MapEdge edge){
+        return getNode(edge.dstX, edge.dstY);
+    }
+
+    /**
+     * Helper function that gives the node corresponding to the x and y value/coordinates
+     * @param x x value of the node
+     * @param y y value of a node
+     * @return node, null if Neow or Boss
+     */
+    default MapRoomNode getNode(int x, int y){
+        if(y <= -1 || 15 <= y){
+            return null;
+        }
+        for (MapRoomNode node : AbstractDungeon.map.get(y)) {
+            if (x == node.x) {
+                return node;
+            }
+        }
+        return null;
     }
 }

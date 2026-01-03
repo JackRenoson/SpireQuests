@@ -74,7 +74,7 @@ public class QuestBoardQuest {
             this.previewHb.render(sb);
 
             // Take quest btn
-            if (QuestBoardScreen.parentProp.numQuestsPickable <= 0) {
+            if (!QuestManager.canObtainQuests()) {
                 sb.setColor(Color.GRAY.cpy());
             } else if (this.hb.hovered) {
                 sb.setColor(Color.GOLD.cpy());
@@ -174,7 +174,7 @@ public class QuestBoardQuest {
         if (!taken) {
             this.hb.update();
             this.previewHb.update();
-            if (QuestBoardScreen.parentProp.numQuestsPickable > 0) {
+            if (QuestManager.canObtainQuests()) {
                 if (this.hb.justHovered) {
                     CardCrawlGame.sound.playV("UI_HOVER", 0.75F);
                 }

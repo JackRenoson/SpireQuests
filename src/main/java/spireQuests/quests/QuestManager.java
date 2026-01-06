@@ -187,6 +187,18 @@ public class QuestManager {
             return;
         }
 
+        ArrayList<AbstractRelic> toRemove = new ArrayList<>();
+
+        for (AbstractRelic myRelic : Wiz.adp().relics){
+            if(QuestboundRelicsPatch.QuestboundRelicFields.isQuestbound.get(myRelic) == quest){
+                toRemove.add(myRelic);
+            }
+        }
+
+        for (AbstractRelic qbr : toRemove){
+            RelicMiscUtil.removeSpecificRelic(qbr);
+        }
+        
         if (quest.fail()) {
             quests().remove(quest);
             quest.onFail();

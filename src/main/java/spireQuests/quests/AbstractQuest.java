@@ -28,6 +28,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static spireQuests.Anniv8Mod.makeID;
 
@@ -1018,21 +1019,14 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         @SpireInsertPatch(locator = Locator.class)
         public static void enteringRoomPatch(AbstractDungeon __instance, SaveFile file) {
             if (AbstractDungeon.currMapNode != null) {
-                AbstractQuest q1 = QuestManager.quests().stream()
+                QuestManager.quests().stream()
                         .filter(quest -> quest.isAutoComplete && quest.isCompleted())
-                        .findAny()
-                        .orElse(null);
-                if(q1 != null) {
-                    QuestManager.completeQuest(q1);
-                }
-
-                AbstractQuest q2 = QuestManager.quests().stream()
+                        .collect(Collectors.toList())
+                        .forEach(QuestManager::completeQuest);
+                QuestManager.quests().stream()
                         .filter(quest -> quest.isAutoFail && quest.isFailed())
-                        .findAny()
-                        .orElse(null);
-                if(q2 != null) {
-                    QuestManager.failQuest(q2);
-                }
+                        .collect(Collectors.toList())
+                        .forEach(QuestManager::failQuest);
             }
         }
 

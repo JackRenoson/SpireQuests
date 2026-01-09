@@ -24,13 +24,12 @@
   },
   "${ModID}:BoatRepairQuest": {
     "TITLE": "Boat Repair",
-    "DESCRIPTION": "You find a broken Boat. All it needs to work again is an #yAnchor, #yHorn #yCleat, and #yCaptains #yWheel. There are some markings on a map where you might find some...",
+    "DESCRIPTION": "You find a broken Boat. All it needs to work again is an #yAnchor, #yHorn #yCleat, and #yCaptains #yWheel. There are some markings on a map where you might find some, but they'll give less block until you gather them all.",
     "AUTHOR": "JackRenoson",
-    "REWARD": "Boat.",
     "TRACKER_TEXT": [
-      "Find an #yAnchor.",
-      "Find a #yHorn #yCleat.",
-      "Find a #yCaptains #yWheel."
+      "Find an Anchor.",
+      "Find a Horn Cleat.",
+      "Find a Captains Wheel."
     ]
   }
 }

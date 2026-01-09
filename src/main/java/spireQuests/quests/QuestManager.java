@@ -21,6 +21,7 @@ import spireQuests.cardmods.QuestboundMod;
 import spireQuests.patches.QuestRunHistoryPatch;
 import spireQuests.patches.QuestboundRelicsPatch;
 import spireQuests.questStats.QuestStatManager;
+import spireQuests.ui.QuestBoardScreen;
 import spireQuests.util.RelicMiscUtil;
 import spireQuests.util.Wiz;
 import spireQuests.vfx.ShowCardandFakeObtainEffect;
@@ -141,19 +142,16 @@ public class QuestManager {
 
     public static void startQuest(AbstractQuest quest) {
         List<AbstractQuest> questList = quests();
-        if (questList.size() >= QUEST_LIMIT) {
-            AbstractQuest toRemove = questList.get(0);
-            Anniv8Mod.logger.info("Removing quest {} due to quest limit ({})!", toRemove.id, QUEST_LIMIT);
-            failQuest(toRemove);
-        }
 
         questList.add(quest);
         questList.sort(null);
         quest.onStart();
-        if (quest.questboundCards != null && questboundEnabled()) {
+        if (quest.questboundCards != null) {
             quest.questboundCards.forEach(c -> {
                 CardModifierManager.addModifier(c, new QuestboundMod(quest));
-                AbstractDungeon.effectList.add(new ShowCardandFakeObtainEffect(c.makeStatEquivalentCopy(), (float) (Settings.WIDTH / 2), (float) (Settings.HEIGHT / 2)));
+                if (questboundEnabled()) {
+                    AbstractDungeon.effectList.add(new ShowCardandFakeObtainEffect(c.makeStatEquivalentCopy(), (float) (Settings.WIDTH / 2), (float) (Settings.HEIGHT / 2)));
+                }
             });
         }
         if (quest.questboundRelics != null) {
@@ -189,6 +187,18 @@ public class QuestManager {
             return;
         }
 
+        ArrayList<AbstractRelic> toRemove = new ArrayList<>();
+
+        for (AbstractRelic myRelic : Wiz.adp().relics){
+            if(QuestboundRelicsPatch.QuestboundRelicFields.isQuestbound.get(myRelic) == quest){
+                toRemove.add(myRelic);
+            }
+        }
+
+        for (AbstractRelic qbr : toRemove){
+            RelicMiscUtil.removeSpecificRelic(qbr);
+        }
+        
         if (quest.fail()) {
             quests().remove(quest);
             quest.onFail();
@@ -255,5 +265,9 @@ public class QuestManager {
         for (AbstractQuest q : quests()) {
             q.forceFail();
         }
+    }
+
+    public static boolean canObtainQuests() {
+        return (QuestBoardScreen.parentProp.numQuestsPickable > 0) && (quests().size() < QUEST_LIMIT);
     }
 }

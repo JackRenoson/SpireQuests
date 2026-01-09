@@ -64,11 +64,12 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
 
         new TriggerTracker<>(QuestTriggers.ENTER_ROOM, 1)
                 .triggerCondition(r -> ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(r, id))
-                .setFailureTrigger(QuestTriggers.ACT_CHANGE)
+                .setFailureTrigger(QuestTriggers.BEFORE_ACT_CHANGE)
                 .add(this);
 
         new SaveNodeTracker(startX, startY).hide().add(this);
 
+        isAutoComplete = true;
         isAutoFail = true;
     }
 
@@ -103,6 +104,9 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
 
     @Override
     public void markNodes(ArrayList<ArrayList<MapRoomNode>> map, Random rng) {
+        if (this.isFailed()) {
+            return;
+        }
         ArrayList<MapRoomNode> toBeChecked = new ArrayList<>();
         ArrayList<MapRoomNode> validRooms = new ArrayList<>();
         ArrayList<MapRoomNode> checkedRooms = new ArrayList<>();

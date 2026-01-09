@@ -140,10 +140,10 @@ public class EmbraceTheCurseQuest extends AbstractQuest {
         // they've completed the quest, and more payoff for the curses they have is appropriate).
         // For curses, which ones can show up depends on the rarity of the card being replaced.
         List<AbstractCard> options = new ArrayList<>(specialQuestCards);
-        if (AbstractDungeon.miscRng.randomBoolean(specialQuestCards.size() / 4.0f)) {
+        if (AbstractQuest.rng.randomBoolean(specialQuestCards.size() / 4.0f)) {
             options.addAll(specialQuestCards);
         }
-        if (specialQuestCards.size() == 4 && AbstractDungeon.miscRng.randomBoolean()) {
+        if (specialQuestCards.size() == 4 && AbstractQuest.rng.randomBoolean()) {
             options.addAll(specialQuestCards);
         }
         switch (rarity) {
@@ -152,7 +152,7 @@ public class EmbraceTheCurseQuest extends AbstractQuest {
                 break;
             case UNCOMMON:
                 options.addAll(mostlyHarmlessCurses);
-                if (AbstractDungeon.miscRng.randomBoolean()) {
+                if (AbstractQuest.rng.randomBoolean()) {
                     options.addAll(harmfulCurses);
                 }
                 break;
@@ -161,7 +161,7 @@ public class EmbraceTheCurseQuest extends AbstractQuest {
                 options.addAll(harmfulCurses);
                 break;
         }
-        return options.get(AbstractDungeon.miscRng.random(options.size() - 1));
+        return options.get(AbstractQuest.rng.random(options.size() - 1));
     }
 
     // We target this patch between the initial creation of the rewards list and the logic for upgrading cards in it
@@ -172,9 +172,9 @@ public class EmbraceTheCurseQuest extends AbstractQuest {
             if (TheLivingCurse.hasRelic()) {
                 // This is effectively "1 card in 8 is replaced by a curse, but never multiple in one reward"
                 float chance = 1 - (float)Math.pow(0.875, retVal.size());
-                boolean addCurse = AbstractDungeon.miscRng.randomBoolean(chance);
+                boolean addCurse = AbstractQuest.rng.randomBoolean(chance);
                 if (addCurse) {
-                    int i = AbstractDungeon.miscRng.random(retVal.size() - 1);
+                    int i = AbstractQuest.rng.random(retVal.size() - 1);
                     retVal.set(i, getCurse(retVal.get(i).rarity));
                 }
             }

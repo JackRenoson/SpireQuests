@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.potions.AbstractPotion.PotionRarity;
 import com.megacrit.cardcrawl.relics.AbstractRelic.RelicTier;
@@ -34,6 +35,8 @@ import static spireQuests.Anniv8Mod.makeID;
 
 public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     private static final String[] TEXT = CardCrawlGame.languagePack.getUIString(makeID("AbstractQuest")).TEXT;
+
+    public static Random rng;
 
     public enum QuestType {
         SHORT,
@@ -119,12 +122,12 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     }
 
     public void setCost() {
-        this.hpCost = AbstractDungeon.miscRng.random(HP_COST_MIN_RANGE, HP_COST_MAX_RANGE);
-        this.goldCost = AbstractDungeon.miscRng.random(GOLD_COST_MIN_RANGE, GOLD_COST_MAX_RANGE);
+        this.hpCost = AbstractQuest.rng.random(HP_COST_MIN_RANGE, HP_COST_MAX_RANGE);
+        this.goldCost = AbstractQuest.rng.random(GOLD_COST_MIN_RANGE, GOLD_COST_MAX_RANGE);
 
         // neow room quests only cost hp to prevent weird shit with buying quests with gold and then losing all your gold to neow
         if (AbstractDungeon.floorNum > 1) {
-            this.usingGoldCost = AbstractDungeon.miscRng.randomBoolean();
+            this.usingGoldCost = AbstractQuest.rng.randomBoolean();
         } else {
             this.usingGoldCost = false;
         }
@@ -268,7 +271,7 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         useDefaultReward = true;
 
         if (CardCrawlGame.isInARun()) {
-            QuestReward reward = getGenericRewardWeightedList().getRandom(AbstractDungeon.miscRng);
+            QuestReward reward = getGenericRewardWeightedList().getRandom(AbstractQuest.rng);
             questRewards.add(reward);
         }
         this.rewardsText = getRewardsText();
@@ -283,20 +286,20 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         switch (this.difficulty) {
             default:
             case EASY:
-                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(50, 70) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.GoldReward(((AbstractQuest.rng.random(50, 70) + 2) / 5) * 5), 3);
                 rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.COMMON, true)), 2);
-                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(5, 7)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractQuest.rng.random(5, 7)), 2);
                 break;
             case NORMAL:
-                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(90, 120) + 2) / 5) * 5), 4);
+                rewards.add(new QuestReward.GoldReward(((AbstractQuest.rng.random(90, 120) + 2) / 5) * 5), 4);
                 rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.UNCOMMON, true)), 3);
-                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(8, 10)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractQuest.rng.random(8, 10)), 2);
                 break;
             case HARD:
-                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(140, 180) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.GoldReward(((AbstractQuest.rng.random(140, 180) + 2) / 5) * 5), 3);
                 rewards.add(new QuestReward.RandomRelicReward(RelicTier.COMMON), 2);
                 rewards.add(new QuestReward.RandomRelicReward(), 1);
-                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(12, 14)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractQuest.rng.random(12, 14)), 2);
                 break;
         }
         

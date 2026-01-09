@@ -39,7 +39,7 @@ public class BoatRepairQuest extends AbstractQuest implements MarkNodeQuest, Cus
     public int curAct = 0;
 
     public BoatRepairQuest() {
-        super(QuestType.SHORT, QuestDifficulty.NORMAL);
+        super(QuestType.LONG, QuestDifficulty.NORMAL);
         startX = 0;
         startY = -1;
         if(CardCrawlGame.isInARun()) {

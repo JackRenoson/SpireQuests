@@ -30,5 +30,13 @@
     "TRACKER_TEXT": [
       "Clumsy Blasphemies played"
     ]
+  },
+  "${ModID}:TwosCompanyQuest": {
+    "TITLE": "Two's Company",
+    "DESCRIPTION": "In #b3 different combats, have exactly #b2 enemies alive at the start of your final turn.",
+    "AUTHOR": "iry",
+    "TRACKER_TEXT": [
+      "Two enemies alive at the start of your final turn"
+    ]
   }
 }

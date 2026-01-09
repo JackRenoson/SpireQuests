@@ -52,7 +52,6 @@ public class QuestTriggers {
     public static final Trigger<Void> COMBAT_END = new Trigger<>();
     public static final Trigger<AbstractPotion> USE_POTION = new Trigger<>();
 
-    public static final Trigger<Void> IMPENDING_DAY_KILL = new Trigger<>();
     public static final Trigger<Void> BOOT_TRIGGER = new Trigger<>();
     public static final Trigger<AbstractOrb> CHANNEL_ORB = new Trigger<>();
     public static final Trigger<AbstractOrb> EVOKE_ORB = new Trigger<>();

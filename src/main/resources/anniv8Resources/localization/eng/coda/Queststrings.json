@@ -57,5 +57,13 @@
     "TRACKER_TEXT": [
       "Orb cut down"
     ]
+  },
+  "${ModID}:HellbentQuest": {
+    "TITLE": "Hellbent",
+    "DESCRIPTION": "End #b5 turns with no cards in hand.",
+    "AUTHOR": "coda",
+    "TRACKER_TEXT": [
+      "Turns with no cards"
+    ]
   }
 }

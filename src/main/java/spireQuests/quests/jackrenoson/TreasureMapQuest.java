@@ -17,6 +17,7 @@ import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.quests.MarkNodeQuest;
+import spireQuests.util.NodeUtil;
 import spireQuests.util.TexLoader;
 
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
         ArrayList<MapRoomNode> validRooms = new ArrayList<>();
         ArrayList<MapRoomNode> checkedRooms = new ArrayList<>();
         ArrayList<MapRoomNode> topRests = new ArrayList<>();
-        toBeChecked.add(getNode(startX, startY));
+        toBeChecked.add(NodeUtil.getNode(startX, startY));
         while(!toBeChecked.isEmpty()) {
             MapRoomNode curr = toBeChecked.remove(0);
             if (curr == null || curr.y == -1) { //Neow room
@@ -126,7 +127,7 @@ public class TreasureMapQuest extends AbstractQuest implements MarkNodeQuest {
                         }
                         if (curr.hasEdges()) {
                             for (MapEdge edge : curr.getEdges()) {
-                                MapRoomNode node = getNode(edge);
+                                MapRoomNode node = NodeUtil.getNode(edge);
                                 if(node!=null) {
                                     toBeChecked.add(node);
                                 }

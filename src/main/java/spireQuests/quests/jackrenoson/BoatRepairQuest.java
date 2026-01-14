@@ -21,6 +21,7 @@ import spireQuests.quests.QuestReward;
 import spireQuests.quests.jackrenoson.relics.Sail;
 import spireQuests.quests.modargo.MulticlassQuest;
 import spireQuests.ui.QuestBoardScreen;
+import spireQuests.util.NodeUtil;
 import spireQuests.util.TexLoader;
 
 import java.util.ArrayList;
@@ -132,7 +133,7 @@ public class BoatRepairQuest extends AbstractQuest implements MarkNodeQuest, Cus
             if(curr != null && curr.getRoom() != null) {
                 checkedRooms.add(curr);
                 for (MapEdge edge : curr.getEdges()) {
-                    MapRoomNode node = getNode(edge);
+                    MapRoomNode node = NodeUtil.getNode(edge);
                     if (node != null && node.getRoom() != null && node.getRoom().getClass() != room1.getRoom().getClass() && node.getRoom().getClass() != room2.getRoom().getClass() && !(node.getRoom() instanceof MonsterRoom || (node.getRoom() instanceof RestRoom && !(hasShovel || curr.equals(markedX))))) {
                         validRooms.add(node);
                     }
@@ -172,7 +173,7 @@ public class BoatRepairQuest extends AbstractQuest implements MarkNodeQuest, Cus
             if(curr != null && curr.getRoom() != null) {
                 checkedRooms.add(curr);
                 for (MapEdge edge : curr.getEdges()) {
-                    MapRoomNode node = getNode(edge);
+                    MapRoomNode node = NodeUtil.getNode(edge);
                     if (node != null && node.getRoom() != null && node.getRoom().getClass() != room1.getRoom().getClass() && node.getRoom().getClass() != room2.getRoom().getClass() && !(node.getRoom() instanceof MonsterRoom || (node.getRoom() instanceof RestRoom && !(hasShovel || curr.equals(markedX))))) {
                         middleFromBot.add(node);
                     }
@@ -220,7 +221,7 @@ public class BoatRepairQuest extends AbstractQuest implements MarkNodeQuest, Cus
             ArrayList<MapRoomNode> treasureRooms = new ArrayList<>();
             ArrayList<MapRoomNode> eventRooms = new ArrayList<>();
             ArrayList<MapRoomNode> checkedRooms = new ArrayList<>();
-            toBeChecked.add(getNode(startX, startY));
+            toBeChecked.add(NodeUtil.getNode(startX, startY));
             while (!toBeChecked.isEmpty()) {
                 MapRoomNode curr = toBeChecked.remove(0);
                 if (curr == null || curr.y == -1) { //Neow room
@@ -247,7 +248,7 @@ public class BoatRepairQuest extends AbstractQuest implements MarkNodeQuest, Cus
                         }
                         if (curr.hasEdges()) {
                             for (MapEdge edge : curr.getEdges()) {
-                                MapRoomNode node = getNode(edge);
+                                MapRoomNode node = NodeUtil.getNode(edge);
                                 if (node != null) {
                                     toBeChecked.add(node);
                                 }

@@ -1,4 +1,10 @@
 {
+  "${ModID}:HoardQuest": {
+    "TITLE": "Amass a Hoard",
+    "DESCRIPTION": "Gather more gold, so you have a hoard of 500 gold or more!",
+    "AUTHOR": "JackRenoson",
+    "REWARD": "Gain 10% extra gold",
+  },
   "${ModID}:RainbowQuest": {
     "TITLE": "Chase a Rainbow",
     "DESCRIPTION": "",

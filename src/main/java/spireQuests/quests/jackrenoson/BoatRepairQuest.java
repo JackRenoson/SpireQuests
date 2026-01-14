@@ -205,11 +205,11 @@ public class BoatRepairQuest extends AbstractQuest implements MarkNodeQuest, Cus
                 ShowMarkedNodesOnMapPatch.ImageField.MarkNode(room1, id, textures.get(0));
             }
             MapRoomNode room2 = findNewRoom(room1, room1, rng);
-            if(needAnchor) {
+            if(needHornCleat) {
                 ShowMarkedNodesOnMapPatch.ImageField.MarkNode(room2, id, textures.get(1));
             }
             MapRoomNode room3 = findNewRoom(room1, room2, rng);
-            if(needAnchor) {
+            if(needCaptainsWheel) {
                 ShowMarkedNodesOnMapPatch.ImageField.MarkNode(room3, id, textures.get(2));
             }
         } else {

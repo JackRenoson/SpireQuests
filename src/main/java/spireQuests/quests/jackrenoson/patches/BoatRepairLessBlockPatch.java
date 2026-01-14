@@ -22,14 +22,12 @@ public class BoatRepairLessBlockPatch {
     public static class BrokenAnchor {
         @SpirePrefixPatch
         public static SpireReturn<Void> CheckIfBroken(Anchor __instance) {
-            for(AbstractQuest quest : QuestManager.quests()){
-                if(quest instanceof BoatRepairQuest){
-                    __instance.flash();
-                    atb(new RelicAboveCreatureAction(AbstractDungeon.player, __instance));
-                    atb(new GainBlockAction(AbstractDungeon.player, AbstractDungeon.player, 2));
-                    __instance.grayscale = true;
-                    return SpireReturn.Return();
-                }
+            if(shouldRun()) {
+                __instance.flash();
+                atb(new RelicAboveCreatureAction(AbstractDungeon.player, __instance));
+                atb(new GainBlockAction(AbstractDungeon.player, AbstractDungeon.player, 2));
+                __instance.grayscale = true;
+                return SpireReturn.Return();
             }
             return SpireReturn.Continue();
         }
@@ -38,14 +36,8 @@ public class BoatRepairLessBlockPatch {
     public static class BrokenAnchorText {
         @SpirePrefixPatch
         public static SpireReturn<String> CheckIfBroken(Anchor __instance) {
-            if (CardCrawlGame.isInARun()) {
-                for (AbstractQuest quest : QuestManager.quests()) {
-                    if (quest instanceof BoatRepairQuest) {
-                        return SpireReturn.Return(__instance.DESCRIPTIONS[0] + 2 + __instance.DESCRIPTIONS[1]);
-                    }
-                }
-            }
-
+            if (shouldRun())
+                return SpireReturn.Return(__instance.DESCRIPTIONS[0] + 2 + __instance.DESCRIPTIONS[1]);
             return SpireReturn.Continue();
         }
     }
@@ -55,17 +47,13 @@ public class BoatRepairLessBlockPatch {
     public static class BrokenCleat {
         @SpirePrefixPatch
         public static SpireReturn<Void> CheckIfBroken(HornCleat __instance) {
-            if (__instance.counter == 1) {
-                for (AbstractQuest quest : QuestManager.quests()) {
-                    if (quest instanceof BoatRepairQuest) {
-                        __instance.flash();
-                        atb(new RelicAboveCreatureAction(AbstractDungeon.player, __instance));
-                        atb(new GainBlockAction(AbstractDungeon.player, AbstractDungeon.player, 4));
-                        __instance.grayscale = true;
-                        __instance.counter = -1;
-                        return SpireReturn.Return();
-                    }
-                }
+            if (shouldRun() && __instance.counter == 1) {
+                __instance.flash();
+                atb(new RelicAboveCreatureAction(AbstractDungeon.player, __instance));
+                atb(new GainBlockAction(AbstractDungeon.player, AbstractDungeon.player, 4));
+                __instance.grayscale = true;
+                __instance.counter = -1;
+                return SpireReturn.Return();
             }
             return SpireReturn.Continue();
         }
@@ -74,13 +62,8 @@ public class BoatRepairLessBlockPatch {
     public static class BrokenCleatText {
         @SpirePrefixPatch
         public static SpireReturn<String> CheckIfBroken(HornCleat __instance) {
-            if (CardCrawlGame.isInARun()) {
-                for (AbstractQuest quest : QuestManager.quests()) {
-                    if (quest instanceof BoatRepairQuest) {
-                        return SpireReturn.Return(__instance.DESCRIPTIONS[0] + 4 + __instance.DESCRIPTIONS[1]);
-                    }
-                }
-            }
+            if (shouldRun())
+                return SpireReturn.Return(__instance.DESCRIPTIONS[0] + 4 + __instance.DESCRIPTIONS[1]);
             return SpireReturn.Continue();
         }
     }
@@ -90,17 +73,13 @@ public class BoatRepairLessBlockPatch {
     public static class BrokenWheel {
         @SpirePrefixPatch
         public static SpireReturn<Void> CheckIfBroken(CaptainsWheel __instance) {
-            if(__instance.counter == 2) {
-                for (AbstractQuest quest : QuestManager.quests()) {
-                    if (quest instanceof BoatRepairQuest) {
+            if(shouldRun() && __instance.counter == 2) {
                         __instance.flash();
                         atb(new RelicAboveCreatureAction(AbstractDungeon.player, __instance));
                         atb(new GainBlockAction(AbstractDungeon.player, AbstractDungeon.player, 6));
                         __instance.grayscale = true;
                         __instance.counter = -1;
                         return SpireReturn.Return();
-                    }
-                }
             }
             return SpireReturn.Continue();
         }
@@ -109,14 +88,17 @@ public class BoatRepairLessBlockPatch {
     public static class BrokenWheelText {
         @SpirePrefixPatch
         public static SpireReturn<String> CheckIfBroken(CaptainsWheel __instance) {
-            if (CardCrawlGame.isInARun()) {
-                for (AbstractQuest quest : QuestManager.quests()) {
-                    if (quest instanceof BoatRepairQuest) {
-                        return SpireReturn.Return(__instance.DESCRIPTIONS[0] + 6 + __instance.DESCRIPTIONS[1]);
-                    }
-                }
-            }
+            if(shouldRun())
+                return SpireReturn.Return(__instance.DESCRIPTIONS[0] + 6 + __instance.DESCRIPTIONS[1]);
             return SpireReturn.Continue();
         }
+    }
+
+    private static boolean shouldRun(){
+        if(CardCrawlGame.isInARun())
+            for (AbstractQuest quest : QuestManager.quests())
+                if (quest instanceof BoatRepairQuest)
+                    return true;
+        return false;
     }
 }

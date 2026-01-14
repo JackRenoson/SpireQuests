@@ -17,6 +17,9 @@ import com.megacrit.cardcrawl.events.shrines.WeMeetAgain;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Anchor;
+import com.megacrit.cardcrawl.relics.CaptainsWheel;
+import com.megacrit.cardcrawl.relics.HornCleat;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
 import spireQuests.quests.jackrenoson.BoatRepairQuest;
 
@@ -31,13 +34,13 @@ public class BoatRepairSpawnPatch {
             MapRoomNode curr = AbstractDungeon.getCurrMapNode();
             if (ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(0))) {
                 ShowMarkedNodesOnMapPatch.ImageField.ClearMark(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(0));
-                return SpireReturn.Return("Anchor");
+                return SpireReturn.Return(Anchor.ID);
             } else if (ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(1))) {
                 ShowMarkedNodesOnMapPatch.ImageField.ClearMark(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(1));
-                return SpireReturn.Return("HornCleat");
+                return SpireReturn.Return(HornCleat.ID);
             } else if (ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(2))) {
                 ShowMarkedNodesOnMapPatch.ImageField.ClearMark(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(2));
-                return SpireReturn.Return("CaptainsWheel");
+                return SpireReturn.Return(CaptainsWheel.ID);
             }
             return SpireReturn.Continue();
         }
@@ -50,13 +53,13 @@ public class BoatRepairSpawnPatch {
             MapRoomNode curr = AbstractDungeon.getCurrMapNode();
             if (ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(0))) {
                 ShowMarkedNodesOnMapPatch.ImageField.ClearMark(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(0));
-                return SpireReturn.Return("Anchor");
+                return SpireReturn.Return(Anchor.ID);
             } else if (ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(1))) {
                 ShowMarkedNodesOnMapPatch.ImageField.ClearMark(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(1));
-                return SpireReturn.Return("HornCleat");
+                return SpireReturn.Return(HornCleat.ID);
             } else if (ShowMarkedNodesOnMapPatch.ImageField.CheckMarks(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(2))) {
                 ShowMarkedNodesOnMapPatch.ImageField.ClearMark(curr, BoatRepairQuest.id, BoatRepairQuest.textures.get(2));
-                return SpireReturn.Return("CaptainsWheel");
+                return SpireReturn.Return(CaptainsWheel.ID);
             }
             return SpireReturn.Continue();
         }

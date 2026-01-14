@@ -28,6 +28,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static spireQuests.Anniv8Mod.makeID;
 
@@ -61,6 +62,8 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     public boolean useDefaultReward;
     public List<QuestReward> questRewards;
     public boolean rewardScreenOnly = false;
+
+    public boolean isAbandoning = false;
 
     private int trackerTextIndex = 0;
 
@@ -228,12 +231,7 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         trackers.add(questTracker);
 
         if (!questTracker.hidden) {
-            if (trackerTextIndex >= questStrings.TRACKER_TEXT.length) {
-               throw new RuntimeException("Quest " + id + " needs more entries in TRACKER_TEXT for its trackers");
-            }
-            
-            questTracker.text = questStrings.TRACKER_TEXT[trackerTextIndex];
-            trackerTextIndex++;
+            assignTrackerText(questTracker);
         }
 
         if (questTracker.trigger != null) triggers.add(questTracker.trigger);
@@ -241,6 +239,21 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         if (questTracker.failTriggers != null) triggers.addAll(questTracker.failTriggers);
 
         return questTracker;
+    }
+
+    /**
+     * Sets the text of the tracker, which by default tracks the index of each tracker and uses the TRACKER_TEXT entry
+     * for that index. Override this for custom behavior.
+     *
+     * @param questTracker
+     */
+    protected void assignTrackerText(Tracker questTracker) {
+        if (trackerTextIndex >= questStrings.TRACKER_TEXT.length) {
+            throw new RuntimeException("Quest " + id + " needs more entries in TRACKER_TEXT for its trackers");
+        }
+
+        questTracker.text = questStrings.TRACKER_TEXT[trackerTextIndex];
+        trackerTextIndex++;
     }
 
     protected final AbstractQuest addReward(QuestReward reward) {
@@ -1016,21 +1029,14 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         @SpireInsertPatch(locator = Locator.class)
         public static void enteringRoomPatch(AbstractDungeon __instance, SaveFile file) {
             if (AbstractDungeon.currMapNode != null) {
-                AbstractQuest q1 = QuestManager.quests().stream()
+                QuestManager.quests().stream()
                         .filter(quest -> quest.isAutoComplete && quest.isCompleted())
-                        .findAny()
-                        .orElse(null);
-                if(q1 != null) {
-                    QuestManager.completeQuest(q1);
-                }
-
-                AbstractQuest q2 = QuestManager.quests().stream()
+                        .collect(Collectors.toList())
+                        .forEach(QuestManager::completeQuest);
+                QuestManager.quests().stream()
                         .filter(quest -> quest.isAutoFail && quest.isFailed())
-                        .findAny()
-                        .orElse(null);
-                if(q2 != null) {
-                    QuestManager.failQuest(q2);
-                }
+                        .collect(Collectors.toList())
+                        .forEach(QuestManager::failQuest);
             }
         }
 

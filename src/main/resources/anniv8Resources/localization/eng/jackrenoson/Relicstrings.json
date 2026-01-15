@@ -5,5 +5,12 @@
     "DESCRIPTIONS": [
       "Start each combat with a #ySet #ySail card that gives #b6 #yBlock. After your 3rd turn, #yExhaust it."
     ]
+  },
+  "${ModID}:Whelp": {
+    "NAME": "Whelp",
+    "FLAVOR": "More gold = More power!",
+    "DESCRIPTIONS": [
+      "Start each combat with #b1 #yFire #yBreathing, dealing damage to all enemies whenever you draw a #yStatus or #yCurse card. Gain #b1 more for every 100 gold you have."
+    ]
   }
 }

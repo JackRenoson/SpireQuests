@@ -13,21 +13,25 @@ import spireQuests.patches.QuestTriggers;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.quests.QuestManager;
 import spireQuests.quests.QuestReward;
+import spireQuests.quests.jackrenoson.relics.Whelp;
 import spireQuests.quests.modargo.MulticlassQuest;
 import spireQuests.quests.modargo.relics.MulticlassEmblem;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static spireQuests.Anniv8Mod.makeID;
+
 public class HoardQuest extends AbstractQuest {
+    public static final String id = makeID(HoardQuest .class.getSimpleName());
 
     public HoardQuest() {
-        super(QuestType.SHORT, QuestDifficulty.EASY);
+        super(QuestType.LONG, QuestDifficulty.NORMAL);
 
         Tracker goldTracker = new PassiveTracker<>(() -> AbstractDungeon.player.gold >= 500, true)
                 .add(this);
 
-        addReward(new QuestReward.RelicReward(new Vajra()));
+        addReward(new QuestReward.RelicReward(new Whelp()));
     }
 
     @Override

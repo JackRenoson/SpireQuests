@@ -1,9 +1,9 @@
 {
   "${ModID}:HoardQuest": {
     "TITLE": "Amass a Hoard",
-    "DESCRIPTION": "Gather more gold, so you have a hoard of 500 gold or more!",
+    "DESCRIPTION": "Gather gold, so you have a hoard of 500 gold or more!",
     "AUTHOR": "JackRenoson",
-    "REWARD": "Gain 10% extra gold",
+    "TRACKER_TEXT": ["Have 500 gold."]
   },
   "${ModID}:RainbowQuest": {
     "TITLE": "Chase a Rainbow",

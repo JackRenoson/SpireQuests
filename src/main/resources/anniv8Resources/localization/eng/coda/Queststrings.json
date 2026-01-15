@@ -4,7 +4,7 @@
     "DESCRIPTION": "Evoke #b4 unique orb types in one turn.",
     "AUTHOR": "coda",
     "TRACKER_TEXT": [
-      "Evoke 4 unique orb types in one turn.",
+      "Evoke 4 unique orb types in one turn",
       "Orbs Evoked"
     ]
   },
@@ -14,7 +14,7 @@
     "AUTHOR": "coda",
     "REWARD": "Upgrade three random starter or common cards.",
     "TRACKER_TEXT": [
-      "Defeat an Elite or Boss without playing uncommon or rare cards."
+      "Defeat an Elite or Boss without playing uncommon or rare cards"
     ]
   },
   "${ModID}:UnbreakableQuest": {
@@ -56,6 +56,22 @@
     "AUTHOR": "coda",
     "TRACKER_TEXT": [
       "Orb cut down"
+    ]
+  },
+  "${ModID}:UntouchableQuest": {
+    "TITLE": "Untouchable",
+    "DESCRIPTION": "Beat #b3 combats in a row without losing any HP.",
+    "AUTHOR": "coda",
+    "TRACKER_TEXT": [
+      "Combats without losing HP"
+    ]
+  },
+  "${ModID}:HellbentQuest": {
+    "TITLE": "Hellbent",
+    "DESCRIPTION": "End #b5 turns with no cards in hand.",
+    "AUTHOR": "coda",
+    "TRACKER_TEXT": [
+      "Turns with no cards"
     ]
   }
 }

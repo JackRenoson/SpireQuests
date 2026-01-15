@@ -1,7 +1,7 @@
 {
   "${ModID}:GennGreymaneQuest": {
     "TITLE": "Genn Greymane",
-    "DESCRIPTION": "Build your deck with at least #b7 even/X-cost cards and no odd-cost cards (excluding starter cards).",
+    "DESCRIPTION": "Build your deck with at least #b7 even/X-cost cards and no odd-cost cards (excluding starter cards). Card rewards include at least one even/X-cost card.",
     "AUTHOR": "snumodder",
     "REWARD": "Upgrade all starter cards.",
     "TRACKER_TEXT": [
@@ -15,6 +15,14 @@
     "AUTHOR": "snumodder",
     "TRACKER_TEXT": [
       "King Llane survived"
+    ]
+  },
+  "${ModID}:ZilliaxDeluxe3000Quest": {
+    "TITLE": "Zilliax Deluxe 3000",
+    "DESCRIPTION": "A random Module monster appears with the enemies. NL Obtain 2 different Modules from extra Module card rewards.",
+    "AUTHOR": "snumodder",
+    "TRACKER_TEXT": [
+      "Module obtained"
     ]
   }
 }

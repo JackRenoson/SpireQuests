@@ -5,6 +5,7 @@ import basemod.BaseMod;
 import basemod.abstracts.CustomSavable;
 import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -26,6 +27,7 @@ import spireQuests.util.RelicMiscUtil;
 import spireQuests.util.Wiz;
 import spireQuests.vfx.ShowCardandFakeObtainEffect;
 
+import java.io.IOException;
 import java.util.*;
 
 import static spireQuests.Anniv8Mod.*;
@@ -44,8 +46,13 @@ public class QuestManager {
 
     public static SpireField<List<AbstractQuest>> currentQuests = new SpireField<>(ArrayList::new);
 
+    private static SpireConfig filterConfig;
+
     //Called once in postInitialize
     public static void initialize() {
+
+        filterConfig = makeFilterConfig();
+
         for (AbstractQuest.QuestDifficulty diff : AbstractQuest.QuestDifficulty.values()) {
             questsByDifficulty.put(diff, new ArrayList<>());
         }
@@ -269,5 +276,41 @@ public class QuestManager {
 
     public static boolean canObtainQuests() {
         return (QuestBoardScreen.parentProp.numQuestsPickable > 0) && (quests().size() < QUEST_LIMIT);
+    }
+
+    private static SpireConfig makeFilterConfig() {
+        try {
+            SpireConfig config = new SpireConfig(Anniv8Mod.modID, "filterConfig");
+            config.load();
+            return config;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static boolean getFilterConfig(String questID) {
+        if (filterConfig != null) {
+            if (filterConfig.has(questID)) {
+                return filterConfig.getBool(questID);
+            }
+            return true;
+        }
+
+        Anniv8Mod.logger.info("Error loading SpireQuest quest filters. Config not initialized?");
+        return true;
+    }
+
+    public static void setFilterConfig(String questID, boolean questEnabled) {
+        if (filterConfig != null) {
+            filterConfig.setBool(questID, questEnabled);
+            try {
+                filterConfig.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Anniv8Mod.logger.info("Error loading SpireQuest quest filters. Config not initialized?");
+        }
     }
 }

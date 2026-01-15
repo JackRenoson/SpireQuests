@@ -90,7 +90,8 @@
       "Quests Seen",
       "Quests Taken",
       "Quests Completed",
-      "Quests Failed"
+      "Quests Failed",
+      "Enabled"
     ]
   },
   "${ModID}:QuestStatsMainMenuPanel": {

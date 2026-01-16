@@ -36,6 +36,6 @@ public class HoardQuest extends AbstractQuest {
 
     @Override
     public boolean canSpawn(){
-        return AbstractDungeon.player.gold < 400;
+        return AbstractDungeon.player.gold < 300;
     }
 }

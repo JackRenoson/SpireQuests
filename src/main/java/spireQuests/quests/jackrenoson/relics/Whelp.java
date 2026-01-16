@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.powers.FireBreathingPower;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import spireQuests.abstracts.AbstractSQRelic;
 import spireQuests.quests.jackrenoson.cards.SetSail;
+import spireQuests.util.Wiz;
 
 import java.util.Objects;
 
@@ -28,14 +29,14 @@ public class Whelp extends AbstractSQRelic {
 
     @Override
     public void onGainGold() {
-        if(AbstractDungeon.currMapNode != null && AbstractDungeon.currMapNode.room != null && AbstractDungeon.currMapNode.room.phase != AbstractRoom.RoomPhase.COMBAT){
+        if(Wiz.isInCombat()){
             this.counter = 1 + AbstractDungeon.player.gold/100;
         }
     }
 
     @Override
     public void onLoseGold() {
-        if(AbstractDungeon.currMapNode != null && AbstractDungeon.currMapNode.room != null && AbstractDungeon.currMapNode.room.phase != AbstractRoom.RoomPhase.COMBAT){
+        if(Wiz.isInCombat()){
             this.counter = 1 + AbstractDungeon.player.gold/100;
         }
     }

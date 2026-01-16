@@ -10,7 +10,7 @@
     "NAME": "Whelp",
     "FLAVOR": "More gold = More power!",
     "DESCRIPTIONS": [
-      "Start each combat with #b1 #yFire #yBreathing, dealing damage to all enemies whenever you draw a #yStatus or #yCurse card. Gain #b1 more for every 100 gold you have."
+      "Whenever you draw a #yStatus or #yCurse card, deal #b1 damage to all enemies. Deal #b1 more for every 100 gold you have."
     ]
   }
 }

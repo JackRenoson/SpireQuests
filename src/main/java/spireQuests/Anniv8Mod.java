@@ -60,6 +60,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static spireQuests.quests.soytheproton.MothQuest.FLY_SFX;
+import static spireQuests.quests.soytheproton.MothQuest.MOTH_SFX;
+
 @SuppressWarnings({"unused"})
 @SpireInitializer
 public class Anniv8Mod implements
@@ -344,9 +347,10 @@ public class Anniv8Mod implements
         }
     }
 
-
     @Override
     public void receiveAddAudio() {
+        BaseMod.addAudio(FLY_SFX,modID + "Resources/audio/soytheproton/strawberry_flyaway.wav");
+        BaseMod.addAudio(MOTH_SFX,modID + "Resources/audio/soytheproton/strawberry_laugh.wav");
         BaseMod.addAudio(RentalModifier.ID,
                 Anniv8Mod.modID + "Resources/images/indi_keurodz/coin1.ogg");
     }

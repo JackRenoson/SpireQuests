@@ -177,7 +177,7 @@ public class BoatRepairQuest extends AbstractQuest implements MarkNodeQuest, Cus
                     if (node != null && node.getRoom() != null && node.getRoom().getClass() != room1.getRoom().getClass() && node.getRoom().getClass() != room2.getRoom().getClass() && !(node.getRoom() instanceof MonsterRoom || (node.getRoom() instanceof RestRoom && !(hasShovel || curr.equals(markedX))))) {
                         middleFromBot.add(node);
                     }
-                    if (node.y < Math.min(room1.y, room2.y))
+                    if (node.y < Math.max(room1.y, room2.y))
                         middleBotCheckList.add(node);
                 }
             }

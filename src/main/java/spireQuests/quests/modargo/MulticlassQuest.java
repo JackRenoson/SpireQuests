@@ -42,7 +42,6 @@ public class MulticlassQuest extends AbstractQuest {
             playerClass = playerClasses.get(rng.random(playerClasses.size() - 1));
         }
         setPlayerClass(playerClass);
-        titleScale = 0.7f;
     }
 
     @Override

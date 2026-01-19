@@ -1,9 +1,8 @@
 package spireQuests.patches;
 
-import basemod.BaseMod;
-import basemod.patches.com.megacrit.cardcrawl.relics.AbstractRelic.InstantObtainRelicGetHook;
-import basemod.patches.com.megacrit.cardcrawl.relics.AbstractRelic.InstantObtainRelicGetHook2;
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -18,20 +17,25 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.relics.Boot;
+import com.megacrit.cardcrawl.potions.PotionSlot;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Boot;
 import com.megacrit.cardcrawl.relics.Ectoplasm;
+import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rewards.chests.AbstractChest;
 import com.megacrit.cardcrawl.rewards.chests.BossChest;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.ShopRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
+import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import com.megacrit.cardcrawl.vfx.campfire.CampfireSmithEffect;
+import com.megacrit.cardcrawl.vfx.combat.FlashAtkImgEffect;
 import javassist.CtBehavior;
-import spireQuests.Anniv8Mod;
 import spireQuests.quests.Trigger;
+import spireQuests.quests.luaviper.actions.EnemyDiesDelayedCheckAction;
+import spireQuests.util.Wiz;
 
 import java.util.ArrayList;
 
@@ -51,8 +55,8 @@ public class QuestTriggers {
     public static final Trigger<Void> VICTORY = new Trigger<>(); //Excludes Smoke Bomb and other ways of escaping
     public static final Trigger<Void> COMBAT_END = new Trigger<>();
     public static final Trigger<AbstractPotion> USE_POTION = new Trigger<>();
+    public static final Trigger<Integer> POTION_CHANGE = new Trigger<>();
 
-    public static final Trigger<Void> IMPENDING_DAY_KILL = new Trigger<>();
     public static final Trigger<Void> BOOT_TRIGGER = new Trigger<>();
     public static final Trigger<AbstractOrb> CHANNEL_ORB = new Trigger<>();
     public static final Trigger<AbstractOrb> EVOKE_ORB = new Trigger<>();
@@ -72,6 +76,14 @@ public class QuestTriggers {
     public static final Trigger<AbstractRelic> OBTAIN_RELIC = new Trigger<>(); //NOTE: This is triggered by both obtain() and instantObtain().
     public static final Trigger<Void> EXACT_KILL = new Trigger<>();
     public static final Trigger<AbstractCard> UPGRADE_CARD_AT_CAMPFIRE = new Trigger<>();
+    public static final Trigger<AbstractCard> FATAL_CARD = new Trigger<>(); //NOTE: This is in the DamageAction and only triggers if the source is a card.
+
+    public static final Trigger<Void> NO_STARTER_STRIKES = new Trigger<>();//
+    public static final Trigger<AbstractMonster> ENEMY_DIES_DELAYED_CHECK = new Trigger<>();    //NOTE: This does not trigger until after the action queue has processed.
+    public static final Trigger<AbstractPotion> DISCARD_POTION = new Trigger<>();
+    public static final Trigger<AbstractPotion> SKIP_POTION = new Trigger<>();
+    public static final Trigger<AbstractGameAction.AttackEffect> ATTACK_ANIMATION = new Trigger<>();    //NOTE: This specifically checks for AbstractGameAction.AttackEffect animations. Other animations will not trigger this event.
+    public static final Trigger<Integer> UNBLOCKED_ATTACK_DAMAGE_TAKEN = new Trigger<>();
 
     private static boolean disabled() {
         return CardCrawlGame.mode != CardCrawlGame.GameMode.GAMEPLAY;
@@ -91,6 +103,9 @@ public class QuestTriggers {
 
             DECK_CHANGE.trigger();
             REMOVE_CARD.trigger(c);
+
+            if(AbstractDungeon.player.masterDeck.group.stream().noneMatch(card -> card.tags.contains(AbstractCard.CardTags.STARTER_STRIKE)))
+                NO_STARTER_STRIKES.trigger();
         }
     }
 
@@ -310,8 +325,6 @@ public class QuestTriggers {
         }
     }
 
-    @SpirePatch2(clz= PotionPopUp.class, method = "updateInput")
-    @SpirePatch2(clz= PotionPopUp.class, method = "updateTargetMode")
     @SpirePatch2(clz = PotionPopUp.class, method = "updateInput")
     @SpirePatch2(clz = PotionPopUp.class, method = "updateTargetMode")
     public static class PotionUse {
@@ -336,6 +349,47 @@ public class QuestTriggers {
             return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
         }
     }
+
+    @SpirePatch(clz = TopPanel.class, method = "destroyPotion")
+    public static class DestroyPotion {
+        @SpirePostfixPatch
+        public static void destroyPotionPatch(TopPanel __instance, int slot) {
+            int count = 0;
+            for (AbstractPotion p : AbstractDungeon.player.potions) {
+                if (!(p instanceof PotionSlot)) {
+                    count++;
+                }
+            }
+            POTION_CHANGE.trigger(count);
+        }
+    }
+
+    @SpirePatch2(clz = AbstractPlayer.class, method = "removePotion")
+    @SpirePatch2(clz = AbstractPlayer.class, method = "obtainPotion", paramtypez = {AbstractPotion.class})
+    @SpirePatch2(clz = AbstractPlayer.class, method = "obtainPotion", paramtypez = {int.class, AbstractPotion.class})
+    public static class RemoveObtainPotion {
+        @SpireInsertPatch(locator = PotionLocator.class)
+        public static void removeObtainPotionPatch() {
+            int count = 0;
+            for (AbstractPotion p : AbstractDungeon.player.potions) {
+                if (!(p instanceof PotionSlot)) {
+                    count++;
+                }
+            }
+            POTION_CHANGE.trigger(count);
+        }
+
+        private static class PotionLocator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(ArrayList.class, "set");
+                int[] lines = LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+                lines[0]++;
+                return lines;
+            }
+        }
+    }
+
     @SpirePatch(clz = Boot.class, method = "onAttackToChangeDamage")
     public static class BootTracker {
         @SpireInsertPatch(locator = BootLocator.class)
@@ -497,4 +551,86 @@ public class QuestTriggers {
             UPGRADE_CARD_AT_CAMPFIRE.trigger(c);
         }
     }
+
+    @SpirePatch2(
+            clz = AbstractMonster.class,
+            method = "die",
+            paramtypez = {}
+    )
+    public static class OnEnemyDies{
+        @SpirePostfixPatch
+        public static void postfix(AbstractMonster __instance){
+            Wiz.atb(new EnemyDiesDelayedCheckAction(__instance));
+        }
+    }
+
+    @SpirePatch2(
+            clz = CombatRewardScreen.class,
+            method = "clear")
+    public static class SkipPotionPatch{
+        @SpirePrefixPatch
+        public static void prefix(CombatRewardScreen __instance){
+            for(RewardItem r : __instance.rewards){
+                if(r.type == RewardItem.RewardType.POTION){
+                    SKIP_POTION.trigger(r.potion);
+                }
+            }
+        }
+    }
+
+    @SpirePatch(
+            //can't patch TopPanel.destroyPotion because of FairyPotion interaction. patch PotionPopUp.updateInput instead
+            clz = PotionPopUp.class,
+            method = "updateInput"
+    )
+    public static class OnDiscardPotion {
+        @SpireInsertPatch(
+                locator = Locator.class
+        )
+        public static void onDiscardPotion(PotionPopUp __instance) {
+            int slot = ReflectionHacks.getPrivate(__instance, PotionPopUp.class, "slot");
+            AbstractPotion potion = Wiz.p().potions.get(slot);
+            DISCARD_POTION.trigger(potion);
+        }
+
+        private static class Locator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(TopPanel.class, "destroyPotion");
+                int[] found = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[]{found[found.length-1]};
+            }
+        }
+    }
+
+    @SpirePatch2(
+            clz = FlashAtkImgEffect.class,
+            method = SpirePatch.CONSTRUCTOR,
+            paramtypez = {float.class, float.class, AbstractGameAction.AttackEffect.class, boolean.class}
+    )
+    public static class OnAttackAnimation {
+        @SpirePostfixPatch
+        public static void postfix(AbstractGameAction.AttackEffect effect) {
+            ATTACK_ANIMATION.trigger(effect);
+        }
+    }
+
+    @SpirePatch(clz = AbstractPlayer.class, method = "damage")
+    public static class OnTakeUnblockedAttackDamage {
+        @SpireInsertPatch(locator = Locator.class, localvars = {"damageAmount"})
+        public static void onDamage(AbstractPlayer __instance, DamageInfo info, int damageAmount) {
+            if (disabled()) return;
+
+            UNBLOCKED_ATTACK_DAMAGE_TAKEN.trigger(damageAmount);
+        }
+
+        private static class Locator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(GameActionManager.class, "damageReceivedThisTurn");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
+
 }

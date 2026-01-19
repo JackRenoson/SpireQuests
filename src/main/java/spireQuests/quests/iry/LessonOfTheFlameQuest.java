@@ -33,7 +33,6 @@ public class LessonOfTheFlameQuest extends AbstractQuest {
         AbstractCard fiendFire = new FiendFire();
         fiendFire.upgrade();
         addReward(new QuestReward.CardReward(fiendFire));
-        titleScale = 0.9f;
 
         useDefaultReward = false;
     }

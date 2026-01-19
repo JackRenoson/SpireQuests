@@ -36,15 +36,8 @@ public class LessonOfTheCoreQuest extends AbstractQuest {
         AbstractCard reboot = new Reboot();
         reboot.upgrade();
         addReward(new QuestReward.CardReward(reboot));
-        titleScale = 0.9f;
 
         useDefaultReward = false;
-    }
-
-    @Override
-    public void makeTooltips(List<PowerTip> tipList) {
-        super.makeTooltips(tipList);
-        tipList.add(new CardPowerTip(new ClumsyReboot()));
     }
 
     @Override

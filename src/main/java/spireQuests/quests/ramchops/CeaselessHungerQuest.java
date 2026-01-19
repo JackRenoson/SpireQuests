@@ -28,7 +28,6 @@ public class CeaselessHungerQuest extends AbstractQuest {
         new TriggeredUpdateTracker<>(QuestTriggers.CHEST_OPENED, 0, 1, ()-> AbstractDungeon.actNum == 3 ? 1 : 0).add(this);
 
         useDefaultReward = false;
-        titleScale = 1.0f;
     }
 
     @Override

@@ -29,7 +29,6 @@ public class BountyDefectQuest extends AbstractQuest {
                 .add(this);
 
         addReward(new QuestReward.RelicReward(new VolatileStardust()));
-        titleScale = 0.9f;
     }
 
     @Override

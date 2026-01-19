@@ -22,5 +22,13 @@
     "TRACKER_TEXT": [
       "Starter cards smithed"
     ]
+  },
+  "${ModID}:JackOfAllTradesQuest": {
+    "TITLE": "Jack of All Trades",
+    "DESCRIPTION": "Add #b2 Colorless cards to your deck.",
+    "AUTHOR": "MaybeLaterx",
+    "TRACKER_TEXT": [
+      "Colorless cards added"
+    ]
   }
 }

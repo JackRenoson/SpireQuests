@@ -23,7 +23,6 @@ public class BloodfireRitualQuest extends AbstractQuest {
 
         questboundCards = new ArrayList<>();
         questboundCards.add(new BloodfireRitualQuestboundPlaceholder());
-        titleScale = 1.15f;
     }
 
     @Override

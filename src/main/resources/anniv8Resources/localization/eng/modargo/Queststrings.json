@@ -1,7 +1,7 @@
 {
   "${ModID}:PeasantQuest": {
     "TITLE": "Peasant",
-    "DESCRIPTION": "Have the number of commons in your deck, minus the number of uncommons and rares, be at least #b8.",
+    "DESCRIPTION": "Have the number of commons in your deck, minus the number of uncommons and rares, be at least #b7.",
     "AUTHOR": "modargo",
     "TRACKER_TEXT": [
       "Common surplus"
@@ -51,7 +51,6 @@
     "TITLE": "Multiclass",
     "DESCRIPTION": "Cards from another character will show up in your card rewards. Add #b3 of their cards to your deck to embrace your new techniques.",
     "AUTHOR": "modargo",
-    "REWARD": "Multiclass Emblem",
     "TRACKER_TEXT": [
       "Cards added"
     ],

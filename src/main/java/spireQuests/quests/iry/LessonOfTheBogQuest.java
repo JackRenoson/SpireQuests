@@ -36,15 +36,8 @@ public class LessonOfTheBogQuest extends AbstractQuest {
         AbstractCard nightmare = new Nightmare();
         nightmare.upgrade();
         addReward(new QuestReward.CardReward(nightmare));
-        titleScale = 0.9f;
 
         useDefaultReward = false;
-    }
-
-    @Override
-    public void makeTooltips(List<PowerTip> tipList) {
-        super.makeTooltips(tipList);
-        tipList.add(new CardPowerTip(new ClumsyNightmare()));
     }
 
     @Override

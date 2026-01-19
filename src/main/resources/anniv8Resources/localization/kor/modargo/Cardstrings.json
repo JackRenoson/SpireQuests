@@ -1,0 +1,60 @@
+{
+  "${ModID}:PerfectlyPacked": {
+    "NAME": "완벽한 포장",
+    "DESCRIPTION": "{@@}{!Upgrades!|>0=선천성. NL }뽑을 카드 더미에서 서로 다른 팩의 카드 셋 중 하나를 선택해 손으로 가져옵니다. NL 소멸.",
+    "EXTENDED_DESCRIPTION": ["뽑을 카드 더미에 팩의 카드가 없습니다."]
+  },
+  "${ModID}:TheBlackstaff": {
+    "NAME": "검은 지팡이",
+    "DESCRIPTION": "임시 체력을 !M! 얻습니다. NL ${ModID}:점화를 !M! 부여합니다. NL 이 카드를 뽑을 카드 더미에 섞어 넣습니다."
+  },
+  "${ModID}:BloodInTheChalice": {
+    "NAME": "피가 든 성배",
+    "DESCRIPTION": "휘발성. NL 체력을 !M! 잃습니다. NL 소멸."
+  },
+  "${ModID}:FocusedTrance": {
+    "NAME": "집중된 최면",
+    "DESCRIPTION": "휘발성. NL 손상을 !M! 얻습니다. NL 소멸."
+  },
+  "${ModID}:PrimordialFlux": {
+    "NAME": "원시의 흐름",
+    "DESCRIPTION": "휘발성. NL 뽑을 카드 더미에 *점액투성이 를 섞어 넣습니다. NL 소멸."
+  },
+  "${ModID}:EssenceOfFlame": {
+    "NAME": "화염의 정수",
+    "DESCRIPTION": "휘발성. NL *화상 을 얻습니다. NL 소멸."
+  },
+  "${ModID}:PowerFromTheDark": {
+    "NAME": "어둠의 선물",
+    "DESCRIPTION": "휘발성. NL 뽑을 카드 더미 맨 밑에 *공허 를 섞어 넣습니다. NL 소멸."
+  },
+  "${ModID}:BloodfireRitualQuestboundPlaceholder": {
+    "NAME": "혈화 의식",
+    "DESCRIPTION": "전투 시작 시, 퀘스트의 특수 카드 중 하나가 됩니다."
+  },
+  "${ModID}:Pain": {
+    "NAME": "",
+    "DESCRIPTION": "사용불가. NL 손에 있을 때 다른 카드를 사용할 때마다 방어도를 1 잃습니다."
+  },
+  "${ModID}:Regret": {
+    "NAME": "",
+    "DESCRIPTION": "사용불가. NL 턴 종료 시 손에 있는 카드만큼 방어도를 잃습니다."
+  },
+  "${ModID}:NetherStrike": {
+    "NAME": "황천 타격",
+    "DESCRIPTION": "피해를 !D! 줍니다. 이번 턴에 저주를 뽑으면, 약화를 !M! 부여하고 취약을 !M! 부여합니다."
+  },
+  "${ModID}:WickedExchange": {
+    "NAME": "사악한 교환",
+    "DESCRIPTION": "손에 있는 모든 저주를 버립니다. 그만큼 카드를 뽑습니다.",
+    "UPGRADE_DESCRIPTION": "보존. NL 손에 있는 모든 저주를 버립니다. 그만큼 카드를 뽑습니다."
+  },
+  "${ModID}:Curseblast": {
+    "NAME": "저주포",
+    "DESCRIPTION": "적 전체에게 피해를 !D! 줍니다. 덱에 있는 저주마다 피해를 !M! 추가로 줍니다."
+  },
+  "${ModID}:SkullGaze": {
+    "NAME": "해골의 눈",
+    "DESCRIPTION": "덱에 있는 저주 2장마다 적이 힘을 1 잃습니다. NL 소멸."
+  }
+}

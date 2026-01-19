@@ -29,7 +29,6 @@ public class BountyWatcherQuest extends AbstractQuest {
                 .add(this);
 
         addReward(new QuestReward.RelicReward(new DivineOculus()));
-        titleScale = 0.9f;
     }
 
     @Override

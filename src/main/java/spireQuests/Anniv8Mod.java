@@ -39,10 +39,13 @@ import spireQuests.quests.coda.monsters.CharadeMonster;
 import spireQuests.quests.coda.potions.NuclearJuicePotion;
 import spireQuests.quests.enbeon.monsters.WatcherEliteMonster;
 import spireQuests.quests.gk.monsters.ICEliteMonster;
+import spireQuests.quests.indi_keurodz.BalatroQuest;
+import spireQuests.quests.indi_keurodz.modifiers.RentalModifier;
 import spireQuests.quests.modargo.RealityTwistQuest;
 import spireQuests.quests.modargo.monsters.DefectEliteMonster;
 import spireQuests.quests.ramchops.EvilSentryQuest;
 import spireQuests.quests.ramchops.monsters.EvilSentry;
+import spireQuests.quests.snumodder.potions.TickAndTockPotion;
 import spireQuests.rewards.SingleCardReward;
 import spireQuests.ui.FixedModLabeledToggleButton.FixedModLabeledToggleButton;
 import spireQuests.ui.QuestBoardScreen;
@@ -56,6 +59,9 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
+
+import static spireQuests.quests.soytheproton.MothQuest.FLY_SFX;
+import static spireQuests.quests.soytheproton.MothQuest.MOTH_SFX;
 
 @SuppressWarnings({"unused"})
 @SpireInitializer
@@ -85,7 +91,8 @@ public class Anniv8Mod implements
     public static boolean questboundConfig = true;
     public static final String TROPHY_TOOLTIP_CONFIG = "trophyTooltipsConfig";
     public static boolean trophyTooltipsConfig = false;
-
+    public static final String ALWAYS_SHOW_DESCRIPTION_CONFIG = "alwaysShowDescriptionConfig";
+    public static boolean alwaysShowDescriptionConfig = false;
 
     public static final String modID = "anniv8";
 
@@ -131,6 +138,7 @@ public class Anniv8Mod implements
             Properties defaults = new Properties();
             defaults.put(HARD_MODE_CONFIG, false);
             defaults.put(QUESTBOUND_CONFIG, true);
+            defaults.put(ALWAYS_SHOW_DESCRIPTION_CONFIG, false);
             modConfig = new SpireConfig(modID, "anniv8Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,6 +197,7 @@ public class Anniv8Mod implements
     public static void addPotions() {
 
         BaseMod.addPotion(NuclearJuicePotion.class, null, null, null, NuclearJuicePotion.POTION_ID);
+        BaseMod.addPotion(TickAndTockPotion.class, null, null, null, TickAndTockPotion.POTION_ID);
 
         if (Loader.isModLoaded("widepotions")) {
             Consumer<String> whitelist = getWidePotionsWhitelistMethod();
@@ -333,16 +342,19 @@ public class Anniv8Mod implements
         }
 
         for (Keyword keyword : keywords) {
-            BaseMod.addKeyword(modID, keyword.PROPER_NAME, keyword.NAMES, keyword.DESCRIPTION);
+            BaseMod.addKeyword(modID, keyword.PROPER_NAME, keyword.NAMES, keyword.DESCRIPTION, keyword.COLOR);
             if (!keyword.ID.isEmpty()) {
                 Anniv8Mod.keywords.put(keyword.ID, keyword);
             }
         }
     }
 
-
     @Override
     public void receiveAddAudio() {
+        BaseMod.addAudio(FLY_SFX,modID + "Resources/audio/soytheproton/strawberry_flyaway.wav");
+        BaseMod.addAudio(MOTH_SFX,modID + "Resources/audio/soytheproton/strawberry_laugh.wav");
+        BaseMod.addAudio(RentalModifier.ID,
+                Anniv8Mod.modID + "Resources/images/indi_keurodz/coin1.ogg");
     }
 
     @Override
@@ -404,6 +416,17 @@ public class Anniv8Mod implements
                 });
         settingsPanel.addUIElement(toggleTrophyTooltipsButton);
 
+        FixedModLabeledToggleButton toggleDescriptionButton = new FixedModLabeledToggleButton(configStrings.TEXT[6],
+                350.0f, 400.0f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+                alwaysShowDescriptionConfig,
+                settingsPanel,
+                (label) -> {},
+                (button) -> {
+                    alwaysShowDescriptionConfig = button.enabled;
+                    saveConfig();
+                });
+        settingsPanel.addUIElement(toggleDescriptionButton);
+
         BaseMod.registerModBadge(badge, configStrings.TEXT[0], configStrings.TEXT[1], configStrings.TEXT[2], settingsPanel);
     }
 
@@ -411,10 +434,12 @@ public class Anniv8Mod implements
         hardModeConfig = modConfig.getBool(HARD_MODE_CONFIG);
         questboundConfig = modConfig.getBool(QUESTBOUND_CONFIG);
         trophyTooltipsConfig = modConfig.getBool(TROPHY_TOOLTIP_CONFIG);
+        alwaysShowDescriptionConfig = modConfig.getBool(ALWAYS_SHOW_DESCRIPTION_CONFIG);
     }
 
     public static void addSaveFields() {
         RealityTwistQuest.addSaveFields();
+        BalatroQuest.addSaveFields();
     }
 
     @Override
@@ -434,11 +459,16 @@ public class Anniv8Mod implements
         return trophyTooltipsConfig;
     }
 
+    public static boolean alwaysShowDescriptionEnabled() {
+        return alwaysShowDescriptionConfig;
+    }
+
     public static void saveConfig() {
         try {
             modConfig.setBool(HARD_MODE_CONFIG, hardModeConfig);
             modConfig.setBool(QUESTBOUND_CONFIG, questboundConfig);
             modConfig.setBool(TROPHY_TOOLTIP_CONFIG, trophyTooltipsConfig);
+            modConfig.setBool(ALWAYS_SHOW_DESCRIPTION_CONFIG, alwaysShowDescriptionEnabled());
             modConfig.save();
         } catch (Exception e) {
             e.printStackTrace();
@@ -448,7 +478,8 @@ public class Anniv8Mod implements
 
     @Override
     public void receivePostDeath() {
-        QuestManager.failAllActiveQuests();
+        QuestManager.failAllIncompleteActiveQuests();
+        QuestStatManager.commitStats();
     }
 
 

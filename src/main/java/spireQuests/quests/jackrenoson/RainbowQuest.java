@@ -43,7 +43,6 @@ public class RainbowQuest extends AbstractQuest {
         returnQuestboundRelics = false;
 
         addReward(new QuestReward.RelicReward(new QuestionCard()));
-        titleScale = 1.1f;
     }
 
     @Override

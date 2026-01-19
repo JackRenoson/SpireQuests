@@ -36,12 +36,6 @@ public class BountyCharadeQuest extends AbstractQuest {
     
         addReward(new RelicReward(new CharadeOrbRelic()));
     }
-    
-
-    @Override
-    public float getTitleScale() {
-        return 0.8f;
-    }
 
     @Override
     public boolean canSpawn() {

@@ -6,7 +6,9 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.potions.AbstractPotion.PotionRarity;
 import com.megacrit.cardcrawl.relics.AbstractRelic.RelicTier;
@@ -14,7 +16,9 @@ import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import javassist.CtBehavior;
 import spireQuests.Anniv8Mod;
 import spireQuests.patches.ShowMarkedNodesOnMapPatch;
+import spireQuests.questStats.QuestStatManager;
 import spireQuests.questStats.StatRewardBox;
+import spireQuests.ui.QuestBoardQuest;
 import spireQuests.util.QuestStrings;
 import spireQuests.util.QuestStringsUtils;
 import spireQuests.util.WeightedList;
@@ -34,6 +38,8 @@ import static spireQuests.Anniv8Mod.makeID;
 
 public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     private static final String[] TEXT = CardCrawlGame.languagePack.getUIString(makeID("AbstractQuest")).TEXT;
+
+    public static Random rng;
 
     public enum QuestType {
         SHORT,
@@ -56,16 +62,16 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     public String description;
     public String author;
     public float width = 0;
-    protected float titleScale = 1.2f; // change as needed for longer titles
     public boolean needHoverTip = false;
 
     public boolean useDefaultReward;
     public List<QuestReward> questRewards;
+    private QuestReward.CustomRewardIconPlaceholder customRewardIconPlaceholder;
     public boolean rewardScreenOnly = false;
 
     public boolean isAbandoning = false;
 
-    private int trackerTextIndex = 0;
+    protected int trackerTextIndex = 0;
 
     public List<Tracker> trackers;
     protected List<Consumer<Trigger<?>>> triggers;
@@ -119,12 +125,12 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     }
 
     public void setCost() {
-        this.hpCost = AbstractDungeon.miscRng.random(HP_COST_MIN_RANGE, HP_COST_MAX_RANGE);
-        this.goldCost = AbstractDungeon.miscRng.random(GOLD_COST_MIN_RANGE, GOLD_COST_MAX_RANGE);
+        this.hpCost = AbstractQuest.rng.random(HP_COST_MIN_RANGE, HP_COST_MAX_RANGE);
+        this.goldCost = AbstractQuest.rng.random(GOLD_COST_MIN_RANGE, GOLD_COST_MAX_RANGE);
 
         // neow room quests only cost hp to prevent weird shit with buying quests with gold and then losing all your gold to neow
         if (AbstractDungeon.floorNum > 1) {
-            this.usingGoldCost = AbstractDungeon.miscRng.randomBoolean();
+            this.usingGoldCost = AbstractQuest.rng.randomBoolean();
         } else {
             this.usingGoldCost = false;
         }
@@ -139,6 +145,13 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     }
 
     public float getTitleScale() {
+        // No more than 320px @ 1080p
+        float titleScale = 1.2f;
+        float titleWidth = FontHelper.getWidth(QuestBoardQuest.QUEST_TITLE_FONT, this.name, titleScale);
+        while (titleWidth > QuestBoardQuest.MAX_TITLE_WIDTH) {
+            titleScale -= 0.05f;
+            titleWidth = FontHelper.getWidth(QuestBoardQuest.QUEST_TITLE_FONT, this.name, titleScale);
+        }
         return titleScale;
     }
 
@@ -268,7 +281,7 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         useDefaultReward = true;
 
         if (CardCrawlGame.isInARun()) {
-            QuestReward reward = getGenericRewardWeightedList().getRandom(AbstractDungeon.miscRng);
+            QuestReward reward = getGenericRewardWeightedList().getRandom(AbstractQuest.rng);
             questRewards.add(reward);
         }
         this.rewardsText = getRewardsText();
@@ -283,20 +296,20 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         switch (this.difficulty) {
             default:
             case EASY:
-                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(50, 70) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.GoldReward(((AbstractQuest.rng.random(50, 70) + 2) / 5) * 5), 3);
                 rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.COMMON, true)), 2);
-                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(5, 7)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractQuest.rng.random(5, 7)), 2);
                 break;
             case NORMAL:
-                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(90, 120) + 2) / 5) * 5), 4);
+                rewards.add(new QuestReward.GoldReward(((AbstractQuest.rng.random(90, 120) + 2) / 5) * 5), 4);
                 rewards.add(new QuestReward.PotionReward(AbstractDungeon.returnRandomPotion(PotionRarity.UNCOMMON, true)), 3);
-                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(8, 10)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractQuest.rng.random(8, 10)), 2);
                 break;
             case HARD:
-                rewards.add(new QuestReward.GoldReward(((AbstractDungeon.miscRng.random(140, 180) + 2) / 5) * 5), 3);
+                rewards.add(new QuestReward.GoldReward(((AbstractQuest.rng.random(140, 180) + 2) / 5) * 5), 3);
                 rewards.add(new QuestReward.RandomRelicReward(RelicTier.COMMON), 2);
                 rewards.add(new QuestReward.RandomRelicReward(), 1);
-                rewards.add(new QuestReward.MaxHPReward(AbstractDungeon.miscRng.random(12, 14)), 2);
+                rewards.add(new QuestReward.MaxHPReward(AbstractQuest.rng.random(12, 14)), 2);
                 break;
         }
         
@@ -311,9 +324,7 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
 
 
 
-        for (Tracker tracker : trackers) {
-            if (!tracker.isComplete()) return false;
-        }
+        if(!questConditionsAreFulfilled()) return false;
 
 
 
@@ -322,6 +333,14 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         triggers.clear();
         trackers.add(new QuestCompleteTracker());
         completeSFX();
+        QuestStatManager.markComplete(this.id);
+        return true;
+    }
+
+    protected boolean questConditionsAreFulfilled(){
+        for (Tracker tracker : trackers) {
+            if (!tracker.isComplete()) return false;
+        }
         return true;
     }
 
@@ -350,6 +369,7 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         trackers.clear();
         triggers.clear();
         trackers.add(new QuestFailedTracker());
+        QuestStatManager.markFailed(this.id);
     }
 
     public void forceComplete() {
@@ -372,11 +392,11 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
     }
 
     public boolean isCompleted() {
-        return complete;
+        return this.complete();
     }
 
     public boolean isFailed() {
-        return failed;
+        return this.fail();
     }
 
     public final void obtainRewards() {
@@ -1008,6 +1028,17 @@ public abstract class AbstractQuest implements Comparable<AbstractQuest> {
         }
     }
 
+    //This function is used by QuestUI to add the Custom Reward icon to the list of quest rewards.
+    // Anywhere else you need the list of rewards, just use quest.questRewards.
+    public List<QuestReward> getQuestRewardsForActiveQuestList(){
+        //clone rewards list. if quest has a custom reward, add it to the list
+        List<QuestReward> rewards = new ArrayList<>(this.questRewards);
+        if(questStrings.REWARD!=null && !questStrings.REWARD.isEmpty()) {
+            if(customRewardIconPlaceholder==null) customRewardIconPlaceholder = new QuestReward.CustomRewardIconPlaceholder(questStrings.REWARD);
+            rewards.add(customRewardIconPlaceholder);
+        }
+        return rewards;
+    }
 
     // Creates Questbound cards that are handled automatically. Just need an array and add cards to it.
     public ArrayList<AbstractCard> questboundCards;

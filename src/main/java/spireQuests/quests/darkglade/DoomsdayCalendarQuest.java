@@ -19,7 +19,6 @@ public class DoomsdayCalendarQuest extends AbstractQuest {
         new TriggerTracker<>(IMPENDING_DAY_KILL, 12).add(this);
 
         addReward(new QuestReward.CardReward(new StarOfExtinction()));
-        titleScale = 0.9f;
     }
 
     @Override

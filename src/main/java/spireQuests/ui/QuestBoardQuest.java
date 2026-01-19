@@ -1,7 +1,9 @@
 package spireQuests.ui;
 
+import basemod.helpers.CardPowerTip;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -22,6 +24,9 @@ import static com.badlogic.gdx.graphics.Color.WHITE;
 import static spireQuests.Anniv8Mod.makeUIPath;
 
 public class QuestBoardQuest {
+    public static final BitmapFont QUEST_TITLE_FONT = FontHelper.losePowerFont;
+    public static final float MAX_TITLE_WIDTH = 310.0F * Settings.xScale;
+
     public static final String ID = spireQuests.Anniv8Mod.makeID("QuestBoard");
     public static final String[] TEXT = CardCrawlGame.languagePack.getUIString(ID).TEXT;
 
@@ -57,7 +62,7 @@ public class QuestBoardQuest {
             sb.draw(ImageMaster.VICTORY_BANNER, this.x - 50.0F * Settings.xScale, this.y + 199.0F * Settings.yScale + boardY, 612.0F * Settings.xScale, 238.0F * Settings.yScale);
 
             // Quest name
-            FontHelper.renderFontCentered(sb, FontHelper.losePowerFont, this.quest.name, this.x + 260.0F * Settings.xScale, this.y + 340.0F * Settings.yScale + boardY, Color.WHITE, quest.getTitleScale());
+            FontHelper.renderFontCentered(sb, QUEST_TITLE_FONT, this.quest.name, this.x + 260.0F * Settings.xScale, this.y + 340.0F * Settings.yScale + boardY, Color.WHITE, quest.getTitleScale());
             FontHelper.renderSmartText(
                     sb,
                     FontHelper.cardDescFont_N,
@@ -132,14 +137,14 @@ public class QuestBoardQuest {
         float TIP_X_THRESHOLD = 1544.0F * Settings.xScale;
         float TIP_OFFSET_R_X = 20.0F * Settings.xScale;
         float TIP_OFFSET_L_X = -380.0F * Settings.xScale;
-        boolean hasManyTips = this.tips.size() > 3;
+        boolean hasLongTips = tips.size() > 2 && tips.stream().anyMatch(t -> t instanceof CardPowerTip);
 
-        if (!this.tips.isEmpty()) {
-            if (this.previewHb.cX + this.previewHb.width / 2.0F < TIP_X_THRESHOLD) {
-                TipHelper.queuePowerTips(this.previewHb.cX + this.previewHb.width / 2.0F + TIP_OFFSET_R_X, this.previewHb.cY + TipHelper.calculateAdditionalOffset(this.tips, this.previewHb.cY) + boardY, tips);
+        if (!tips.isEmpty()) {
+            if (previewHb.cX + previewHb.width / 2.0F < TIP_X_THRESHOLD) {
+                TipHelper.queuePowerTips(previewHb.cX + previewHb.width / 2.0F + TIP_OFFSET_R_X, previewHb.cY + TipHelper.calculateAdditionalOffset(tips, previewHb.cY) + boardY, tips);
             } else {
-                float tipX = TIP_OFFSET_L_X + (hasManyTips ? this.tips.size() * -100.0F : 0.0F);
-                TipHelper.queuePowerTips(this.previewHb.cX - this.previewHb.width / 2.0F + tipX, this.previewHb.cY + TipHelper.calculateAdditionalOffset(this.tips, this.previewHb.cY) + boardY, tips);
+                float tipX = TIP_OFFSET_L_X + (hasLongTips ? tips.size() * -150.0F * Settings.xScale : 0.0F);
+                TipHelper.queuePowerTips(previewHb.cX - previewHb.width / 2.0F + tipX, previewHb.cY + TipHelper.calculateAdditionalOffset(tips, previewHb.cY) + boardY, tips);
             }
         }
     }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -15,14 +14,12 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.rooms.ShopRoom;
-
-import basemod.helpers.VfxBuilder.Interpolations;
+import spireQuests.Anniv8Mod;
 import spireQuests.quests.AbstractQuest;
 import spireQuests.quests.QuestManager;
+import spireQuests.quests.QuestReward;
 import spireQuests.util.ImageHelper;
 import spireQuests.util.TexLoader;
-import spireQuests.util.Wiz;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +73,10 @@ public class QuestUI {
             if (questHitboxes.size() <= i) questHitboxes.add(new Hitbox(1, 1));
 
             Hitbox hb = questHitboxes.get(i);
+            List<QuestReward> rewards = quest.getQuestRewardsForActiveQuestList();
+            for (QuestReward reward : rewards) {
+                reward.updateHitbox();
+            }
 
             int trackerCount = 0;
             for (AbstractQuest.Tracker t : quest.trackers) {
@@ -90,8 +91,16 @@ public class QuestUI {
             hb.update();
 
             if (hb.hovered) {
-                if (InputHelper.justClickedLeft) {
-                    if (quest.complete() || quest.fail()) QuestManager.completeQuest(quest);
+                if (Settings.isDebug && InputHelper.justClickedRight) {
+                    QuestManager.failQuest(quest);
+                    continue;
+                }
+
+                if (InputHelper.justClickedLeft || InputHelper.justClickedRight) {
+                    if (quest.complete() || quest.fail()) {
+                        QuestManager.completeQuest(quest);
+                        continue;
+                    }
                 }
 
                 if (AbstractDungeon.screen == QuestBoardScreen.Enum.QUEST_BOARD) {
@@ -113,9 +122,6 @@ public class QuestUI {
                     quest.isAbandoning = false;
                 }
 
-                if (Settings.isDebug && InputHelper.justClickedRight) {
-                    QuestManager.failQuest(quest);
-                }
 
             } else {
                 quest.isAbandoning = false;
@@ -173,18 +179,23 @@ public class QuestUI {
                 boolean complete = quest.complete();
                 boolean failed = quest.fail();
 
+                List<QuestReward> rewards = quest.getQuestRewardsForActiveQuestList();
+
                 if (questHitboxes.size() <= i) questHitboxes.add(new Hitbox(1, 1));
                 Hitbox hb = questHitboxes.get(i);
 
                 yPos -= LARGE_SPACING;
-                float rewardOffset = !failed ? 34 * quest.questRewards.size() + 8 : 0;
+                float rewardOffset = !failed ? 34 * rewards.size() + 8 : 0;
                 FontHelper.renderFontRightAligned(sb, largeFont, quest.name, xPos - rewardOffset, yPos - SMALL_SPACING * 0.5f, complete ? Settings.GOLD_COLOR : failed ? Settings.RED_TEXT_COLOR : Color.WHITE);
 
                 quest.width = FontHelper.layout.width + rewardOffset;
 
                 if (!failed) {
-                    for (int j = 0; j < quest.questRewards.size(); ++j) {
-                        sb.draw(quest.questRewards.get(j).icon(), xPos - (32 * (quest.questRewards.size() - j)), yPos - (SMALL_SPACING * 1.1f), 32, 32);
+                    for (int j = 0; j < rewards.size(); ++j) {
+                        sb.draw(rewards.get(j).icon(), xPos - (32 * (rewards.size() - j)), yPos - (SMALL_SPACING * 1.1f), 32, 32);
+                        rewards.get(j).repositionHitbox(xPos - (32 * (rewards.size() - j)), yPos - (SMALL_SPACING * 1.1f), 32, 32);
+                        rewards.get(j).renderHitbox(sb);
+                        rewards.get(j).drawTooltipIfHovered();
                     }
                 }
 
@@ -212,7 +223,7 @@ public class QuestUI {
                 }
 
                 if (hb.hovered) {
-                    if (quest.needHoverTip && !complete && !failed) {
+                    if (quest.needHoverTip || Anniv8Mod.alwaysShowDescriptionEnabled() && !complete && !failed) {
                         PowerTip tooltip = quest.getHoverTooltip();
                         ImageHelper.tipBoxAtMousePos(tooltip.header, tooltip.body);
                     }

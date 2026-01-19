@@ -1,0 +1,46 @@
+{
+  "${ModID}:CowardiceQuest": {
+    "TITLE": "겁쟁이 루트",
+    "DESCRIPTION": "엘리트를 3 번 회피하십시오. (엘리트 전투가 주어졌을 때, 다른 길로 가십시오.)",
+    "AUTHOR": "Dayvig",
+    "REWARD": "무작위 일반 #y유물.",
+    "TRACKER_TEXT": [
+      "회피한 엘리트"
+    ]
+  },
+  "${ModID}:AddictQuest": {
+    "TITLE": "중독성 성격",
+    "DESCRIPTION": "#yJ.A.X. 를 5번의 전투 동안 연속으로 사용하십시오. 다음 #y? 방이 #yJ.A.X 를 주는 증강자 이벤트로 대체됩니다. (다른 선택지 없음.)",
+    "AUTHOR": "Dayvig",
+    "TRACKER_TEXT": [
+      "연속으로 전투에서 복용한 J.A.X."
+    ]
+  },
+  "${ModID}:NeatQuest": {
+    "TITLE": "체계화된 덱",
+    "DESCRIPTION": "덱에 정확히 #b10 장의 공격 카드, #b10 장의 스킬 카드, #b5 장의 파워 카드가 있도록 만드십시오.",
+    "AUTHOR": "Dayvig",
+    "TRACKER_TEXT": [
+      "공격 카드",
+      "스킬 카드",
+      "파워 카드"
+
+    ]
+  },
+  "${ModID}:ZeroCost": {
+    "TITLE": "에너지가 필요한가?",
+    "DESCRIPTION": "비용이 #b0 인 카드 #b3 장을 덱에 추가하십시오.",
+    "AUTHOR": "Dayvig",
+    "TRACKER_TEXT": [
+      "0코스트 카드"
+    ]
+  },
+  "${ModID}:BigCost": {
+    "TITLE": "거물",
+    "DESCRIPTION": "비용이 #b2 이상인 카드 #b3 장을 덱에 추가하십시오.",
+    "AUTHOR": "Dayvig",
+    "TRACKER_TEXT": [
+      "2+코스트 카드"
+    ]
+  }
+}

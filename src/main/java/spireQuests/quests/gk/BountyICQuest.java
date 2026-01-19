@@ -39,7 +39,6 @@ public class BountyICQuest extends AbstractQuest {
                         ICEliteMonster.ID.equals(AbstractDungeon.lastCombatMetricKey))
                 .setFailureTrigger(QuestTriggers.ACT_CHANGE)
                 .add(this);
-        titleScale = 0.9f;
 
         this.isAutoComplete = true;
         this.useDefaultReward = false;

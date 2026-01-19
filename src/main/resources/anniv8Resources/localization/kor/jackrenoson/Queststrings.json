@@ -1,0 +1,41 @@
+{
+  "${ModID}:HoardQuest": {
+    "TITLE": "보물 비축하기",
+    "DESCRIPTION": "500 이상의 골드가 모일 때까지 비축하십시오!",
+    "AUTHOR": "JackRenoson",
+    "TRACKER_TEXT": ["500 골드 보유"]
+  },
+  "${ModID}:RainbowQuest": {
+    "TITLE": "무지개 쫒아가기",
+    "DESCRIPTION": "",
+    "AUTHOR": "JackRenoson",
+    "TRACKER_TEXT": [
+      "서로 다른 색상의 #b",
+      " 장의 카드를 얻으세요."
+    ],
+    "EXTRA_TEXT": [
+      "#y퀘스트 #y귀속 #y프리즘 #y조각 을 얻습니다. 서로 다른 색상의 #b",
+      " 장의 카드를 얻으세요.",
+      "획득한 색상:"
+    ]
+  },
+  "${ModID}:TreasureMapQuest": {
+    "TITLE": "보물 지도",
+    "DESCRIPTION": "이 막에서 나중에 위치한 휴식 장소를 가리키는 지도를 찾았습니다. 그곳으로 가서 보물을 #y발굴 하세요!",
+    "AUTHOR": "JackRenoson",
+    "REWARD": "무작위 유물을 발굴합니다.",
+    "TRACKER_TEXT": [
+      "X 표시된 휴식 장소로 가십시오"
+    ]
+  },
+  "${ModID}:BoatRepairQuest": {
+    "TITLE": "배 수리",
+    "DESCRIPTION": "부서진 배를 발견했습니다. #y닻, #y소뿔모양 #y걸이, #y선장의 #y타륜 만 얻으면 고칠 수 있습니다. 이것들을 발견할 수 있는 곳이 지도에 표시되어 있지만, 모두 모으기 전까진 #y방어도 를 적게 지급합니다.",
+    "AUTHOR": "JackRenoson",
+    "TRACKER_TEXT": [
+      "닻 발견",
+      "소뿔모양 걸이 발견",
+      "선장의 타륜 발견"
+    ]
+  }
+}

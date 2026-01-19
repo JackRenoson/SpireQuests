@@ -1,0 +1,9 @@
+{
+  "${ModID}:VampireFangs": {
+    "NAME": "Vampire Fangs",
+    "FLAVOR": "Made of cheap plastic, but convincing enough to fool your enemies.",
+    "DESCRIPTIONS": [
+      "Upon pickup, replace one Strike card with a Bite."
+    ]
+  }
+}

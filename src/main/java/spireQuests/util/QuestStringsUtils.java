@@ -30,4 +30,5 @@ public class QuestStringsUtils {
     public static QuestStrings getQuestString(String questId) {
         return quests.getOrDefault(questId, null);
     }
+
 }

@@ -27,7 +27,6 @@ public class AmbitiousStrikeQuest extends AbstractQuest {
         }).add(this);
 
         useDefaultReward = false;
-        titleScale = 1.0f;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class AmbitiousStrikeQuest extends AbstractQuest {
             }
         }
 
-        Collections.shuffle(upgradableCards, new Random(AbstractDungeon.miscRng.randomLong()));
+        Collections.shuffle(upgradableCards, new Random(AbstractQuest.rng.randomLong()));
         if (!upgradableCards.isEmpty()) {
             upgradableCards.get(0).upgrade();
             AbstractDungeon.player.bottledCardUpgradeCheck(upgradableCards.get(0));

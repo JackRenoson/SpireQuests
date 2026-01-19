@@ -33,15 +33,8 @@ public class LessonOfTheAsceticQuest extends AbstractQuest {
         AbstractCard rewardCard = new Blasphemy();
         rewardCard.upgrade();
         addReward(new QuestReward.CardReward(rewardCard));
-        titleScale = 0.9f;
 
         useDefaultReward = false;
-    }
-
-    @Override
-    public void makeTooltips(List<PowerTip> tipList) {
-        super.makeTooltips(tipList);
-        tipList.add(new CardPowerTip(new ClumsyBlasphemy()));
     }
 
     @Override

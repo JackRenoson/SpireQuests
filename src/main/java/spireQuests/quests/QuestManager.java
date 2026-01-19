@@ -5,6 +5,7 @@ import basemod.BaseMod;
 import basemod.abstracts.CustomSavable;
 import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -26,9 +27,11 @@ import spireQuests.util.RelicMiscUtil;
 import spireQuests.util.Wiz;
 import spireQuests.vfx.ShowCardandFakeObtainEffect;
 
+import java.io.IOException;
 import java.util.*;
 
 import static spireQuests.Anniv8Mod.*;
+import static spireQuests.util.LanguageUtils.formatLanguage;
 
 @SpirePatch(
         clz = AbstractPlayer.class,
@@ -44,8 +47,13 @@ public class QuestManager {
 
     public static SpireField<List<AbstractQuest>> currentQuests = new SpireField<>(ArrayList::new);
 
+    private static SpireConfig filterConfig;
+
     //Called once in postInitialize
     public static void initialize() {
+
+        filterConfig = makeFilterConfig();
+
         for (AbstractQuest.QuestDifficulty diff : AbstractQuest.QuestDifficulty.values()) {
             questsByDifficulty.put(diff, new ArrayList<>());
         }
@@ -84,7 +92,7 @@ public class QuestManager {
                                     quest.questboundRelics.add(r);
                                     QuestboundRelicsPatch.QuestboundRelicFields.isQuestbound.set(r, quest);
                                     String questName = FontHelper.colorString(quest.name, "y");
-                                    r.tips.add(new PowerTip(keywords.get("Questbound").PROPER_NAME, String.format(CardCrawlGame.languagePack.getUIString(makeID("Questbound")).TEXT[2],questName)));
+                                    r.tips.add(new PowerTip(keywords.get("Questbound").PROPER_NAME, formatLanguage(CardCrawlGame.languagePack.getUIString(makeID("Questbound")).TEXT[2],questName)));
                                 }
                             }
                         }
@@ -162,7 +170,7 @@ public class QuestManager {
                 }
                 String questName = FontHelper.colorString(quest.name, "y");
                 r.instantObtain();
-                r.tips.add(new PowerTip(keywords.get("Questbound").PROPER_NAME, String.format(CardCrawlGame.languagePack.getUIString(makeID("Questbound")).TEXT[2],questName)));
+                r.tips.add(new PowerTip(keywords.get("Questbound").PROPER_NAME, formatLanguage(CardCrawlGame.languagePack.getUIString(makeID("Questbound")).TEXT[2],questName)));
             });
         }
         QuestStatManager.markTaken(quest.id);
@@ -203,7 +211,6 @@ public class QuestManager {
             quests().remove(quest);
             quest.onFail();
 
-            QuestStatManager.markFailed(quest.id);
             List<List<String>> questFailurePerFloor = QuestRunHistoryPatch.questFailurePerFloorLog.get(AbstractDungeon.player);
             if (!questFailurePerFloor.isEmpty()) {
                 questFailurePerFloor.get(questFailurePerFloor.size() - 1).add(quest.id);
@@ -225,17 +232,19 @@ public class QuestManager {
 
         quests().remove(quest);
         quest.obtainRewards();
-        QuestStatManager.markComplete(quest.id);
         List<List<String>> questCompletionPerFloor = QuestRunHistoryPatch.questCompletionPerFloorLog.get(AbstractDungeon.player);
         questCompletionPerFloor.get(questCompletionPerFloor.size() - 1).add(quest.id);
     }
 
     public static void failQuest(AbstractQuest quest) {
+        // Don't want you failing quests you have already completed.
+        if (quest.isCompleted()) {
+            return;
+        }
         quest.forceFail();
         quest.onFail();
         completeQuest(quest);
 
-        QuestStatManager.markFailed(quest.id);
         List<List<String>> questFailurePerFloor = QuestRunHistoryPatch.questFailurePerFloorLog.get(AbstractDungeon.player);
         if (!questFailurePerFloor.isEmpty()) {
             questFailurePerFloor.get(questFailurePerFloor.size() - 1).add(quest.id);
@@ -261,13 +270,51 @@ public class QuestManager {
         //quest ui
     }
 
-    public static void failAllActiveQuests() {
+    public static void failAllIncompleteActiveQuests() {
         for (AbstractQuest q : quests()) {
-            q.forceFail();
+            if (!q.isCompleted() && !q.isFailed()) {
+                q.forceFail();
+            }
         }
     }
 
     public static boolean canObtainQuests() {
         return (QuestBoardScreen.parentProp.numQuestsPickable > 0) && (quests().size() < QUEST_LIMIT);
+    }
+
+    private static SpireConfig makeFilterConfig() {
+        try {
+            SpireConfig config = new SpireConfig(Anniv8Mod.modID, "filterConfig");
+            config.load();
+            return config;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static boolean getFilterConfig(String questID) {
+        if (filterConfig != null) {
+            if (filterConfig.has(questID)) {
+                return filterConfig.getBool(questID);
+            }
+            return true;
+        }
+
+        Anniv8Mod.logger.info("Error loading SpireQuest quest filters. Config not initialized?");
+        return true;
+    }
+
+    public static void setFilterConfig(String questID, boolean questEnabled) {
+        if (filterConfig != null) {
+            filterConfig.setBool(questID, questEnabled);
+            try {
+                filterConfig.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Anniv8Mod.logger.info("Error loading SpireQuest quest filters. Config not initialized?");
+        }
     }
 }
